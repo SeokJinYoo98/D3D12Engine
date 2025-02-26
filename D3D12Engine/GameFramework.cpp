@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
-void WindowManager::Initialize(HINSTANCE hInst, HWND hWnd, int width, int height)
+void CWindowManager::Initialize(HINSTANCE hInst, HWND hWnd, int width, int height)
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "WD Manager On Create\n";
@@ -13,11 +13,11 @@ void WindowManager::Initialize(HINSTANCE hInst, HWND hWnd, int width, int height
 	m_clientHeight = rcClient.bottom - rcClient.top;
 }
 
-void WindowManager::OnDestroy()
+void CWindowManager::OnDestroy()
 {
 }
 
-void D3D12DeviceManager::Initialize(const WindowManager& windowManager)
+void CD3D12DeviceManager::Initialize(const CWindowManager& windowManager)
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "Device On Create\n";
@@ -34,7 +34,7 @@ void D3D12DeviceManager::Initialize(const WindowManager& windowManager)
 	CreateDepthStecilView(windowManager);
 }
 
-void D3D12DeviceManager::OnDestroy()
+void CD3D12DeviceManager::OnDestroy()
 {
 	::CloseHandle(m_fenceEvent);
 
@@ -49,7 +49,7 @@ void D3D12DeviceManager::OnDestroy()
 #endif
 }
 
-void D3D12DeviceManager::ResetCommandListAndAllocator()
+void CD3D12DeviceManager::ResetCommandListAndAllocator()
 {
 	// 명령 할당자와 명령 리스트를 리셋한다.
 	HRESULT hResult = m_directCmdListAlloc->Reset();
@@ -58,7 +58,7 @@ void D3D12DeviceManager::ResetCommandListAndAllocator()
 	if (FAILED(hResult)) throw std::runtime_error("Command List reset failed");
 }
 
-void D3D12DeviceManager::TransitionResourceFromPresentToRenderTarget(D3D12_RESOURCE_BARRIER& d3dResourceBarrier)
+void CD3D12DeviceManager::TransitionResourceFromPresentToRenderTarget(D3D12_RESOURCE_BARRIER& d3dResourceBarrier)
 {
 	/*
 		렌더링을 수행하기 전에 스왑 체인 버퍼의 상태를 Present 상태에서 RenderTarget 상태로 전환함으로써,
@@ -73,13 +73,13 @@ void D3D12DeviceManager::TransitionResourceFromPresentToRenderTarget(D3D12_RESOU
 	m_commandList->ResourceBarrier(1, &d3dResourceBarrier);
 }
 
-void D3D12DeviceManager::SetViewportAndScissorRect()
+void CD3D12DeviceManager::SetViewportAndScissorRect()
 {
 	m_commandList->RSSetViewports(1, &m_d3dViewport);
 	m_commandList->RSSetScissorRects(1, &m_d3dScissorRect);
 }
 
-void D3D12DeviceManager::ClearRenderTargetAndDepthStencil(const DirectX::XMVECTOR& xmvClearColor)
+void CD3D12DeviceManager::ClearRenderTargetAndDepthStencil(const DirectX::XMVECTOR& xmvClearColor)
 {
 	// RTV 핸들 계산
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle =
@@ -121,7 +121,7 @@ void D3D12DeviceManager::ClearRenderTargetAndDepthStencil(const DirectX::XMVECTO
 	
 }
 
-void D3D12DeviceManager::TransitionRenderTargetToPresent(D3D12_RESOURCE_BARRIER& d3dResourceBarrier)
+void CD3D12DeviceManager::TransitionRenderTargetToPresent(D3D12_RESOURCE_BARRIER& d3dResourceBarrier)
 {
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
@@ -131,13 +131,13 @@ void D3D12DeviceManager::TransitionRenderTargetToPresent(D3D12_RESOURCE_BARRIER&
 	HRESULT hResult = m_commandList->Close();
 }
 
-void D3D12DeviceManager::ExcuteCommandList()
+void CD3D12DeviceManager::ExcuteCommandList()
 {
 	ID3D12CommandList* ppd3dCommandLists[] = { m_commandList.Get() };
 	m_commandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
 }
 
-void D3D12DeviceManager::WaitForGpuComplete()
+void CD3D12DeviceManager::WaitForGpuComplete()
 {
 	// CPU 펜스의 값을 증가시킨다.
 	m_fenceValue++;
@@ -153,7 +153,7 @@ void D3D12DeviceManager::WaitForGpuComplete()
 	}
 }
 
-void D3D12DeviceManager::PresentSwapChain()
+void CD3D12DeviceManager::PresentSwapChain()
 {
 	DXGI_PRESENT_PARAMETERS dxgiPresentParameters{ };
 	dxgiPresentParameters.DirtyRectsCount = 0;
@@ -165,7 +165,7 @@ void D3D12DeviceManager::PresentSwapChain()
 	m_swapChainBufferIndex = m_swapChain->GetCurrentBackBufferIndex();
 }
 
-void D3D12DeviceManager::InitializeDevice()
+void CD3D12DeviceManager::InitializeDevice()
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "InitDevice\n";
@@ -217,7 +217,7 @@ void D3D12DeviceManager::InitializeDevice()
 		std::cout << "InitDevice End\n";
 }
 
-void D3D12DeviceManager::InitializeFence()
+void CD3D12DeviceManager::InitializeFence()
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "Init Fence\n";
@@ -239,7 +239,7 @@ void D3D12DeviceManager::InitializeFence()
 
 // 각 서술자의 크기를 GPU에서 직접 조회하여 저장
 // Descirptor Heap내에서 특정 서술자의 위치를 찾을 때 사용
-void D3D12DeviceManager::InitializeDescriptorSize()
+void CD3D12DeviceManager::InitializeDescriptorSize()
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "InitializeDescriptorSize\n";
@@ -254,7 +254,7 @@ void D3D12DeviceManager::InitializeDescriptorSize()
 		std::cout << "InitializeDescriptorSize end\n";
 }
 
-void D3D12DeviceManager::Initialize4XMSAA()
+void CD3D12DeviceManager::Initialize4XMSAA()
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "Initialize4XMSAA\n";
@@ -281,7 +281,7 @@ void D3D12DeviceManager::Initialize4XMSAA()
 		std::cout << "Initialize4XMSAA end\n";
 }
 
-void D3D12DeviceManager::InitializeCommandQueueAndList()
+void CD3D12DeviceManager::InitializeCommandQueueAndList()
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "InitializeCommandQueueAndList\n";
@@ -311,21 +311,15 @@ void D3D12DeviceManager::InitializeCommandQueueAndList()
 		std::cout << "InitializeCommandQueueAndList end\n";
 }
 
-void D3D12DeviceManager::InitializeSwapChain(const WindowManager& wdManager)
+void CD3D12DeviceManager::InitializeSwapChain(const CWindowManager& wdManager)
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "InitializeSwapChain\n";
 
 	m_swapChain.Reset();
 
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeSwapChain1\n";
-
 	RECT rcClient{ };
 	::GetClientRect(wdManager.m_hWnd, &rcClient);
-
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeSwapChain2\n";
 
 	DXGI_SWAP_CHAIN_DESC1 dxgiSwapChainDesc{ };
 	dxgiSwapChainDesc.Width = wdManager.m_clientWidth;
@@ -356,17 +350,11 @@ void D3D12DeviceManager::InitializeSwapChain(const WindowManager& wdManager)
 		nullptr,
 		tempChain.GetAddressOf()
 	);
-	
-
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeSwapChain3\n";
 
 	if (FAILED(tempChain.As(&m_swapChain))) {
 		throw std::runtime_error("스왑체인 캐스팅 오류");
 	}
 
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeSwapChain4\n";
 
 	m_dxgiFactory->MakeWindowAssociation(wdManager.m_hWnd, DXGI_MWA_NO_ALT_ENTER);;
 	// 알트엔터 비활성
@@ -378,7 +366,7 @@ void D3D12DeviceManager::InitializeSwapChain(const WindowManager& wdManager)
 
 }
 
-void D3D12DeviceManager::InitializeRtvAndDsvDescriptorHeap()
+void CD3D12DeviceManager::InitializeRtvAndDsvDescriptorHeap()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{ };
 	rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
@@ -409,7 +397,7 @@ void D3D12DeviceManager::InitializeRtvAndDsvDescriptorHeap()
 		m_d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 }
 
-void D3D12DeviceManager::InitializeViewportAndScissorRect(const WindowManager& wdManager)
+void CD3D12DeviceManager::InitializeViewportAndScissorRect(const CWindowManager& wdManager)
 {
 	if (CONSOLE_MESSAGE)
 		std::cout << "InitializeViewportAndScissorRect\n";
@@ -429,7 +417,7 @@ void D3D12DeviceManager::InitializeViewportAndScissorRect(const WindowManager& w
 		std::cout << "InitializeViewportAndScissorRect end\n";
 } 
 
-void D3D12DeviceManager::CreateRenderTargetView()
+void CD3D12DeviceManager::CreateRenderTargetView()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle
 		= m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
@@ -447,7 +435,7 @@ void D3D12DeviceManager::CreateRenderTargetView()
 	}
 }
 
-void D3D12DeviceManager::CreateDepthStecilView(const WindowManager& wdManager)
+void CD3D12DeviceManager::CreateDepthStecilView(const CWindowManager& wdManager)
 {
 	D3D12_RESOURCE_DESC d3dResourceDesc{ };
 	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -497,12 +485,13 @@ void D3D12DeviceManager::CreateDepthStecilView(const WindowManager& wdManager)
 	);
 }
 
-GameFramework::GameFramework()
-	:m_windowManager{ }, m_deviceManager{ }
+CGameFramework::CGameFramework()
+	:m_windowManager{ }, m_deviceManager{ }, m_gameTimer{ }, m_pszFrameRate{ }
 {
+	_tcscpy_s(m_pszFrameRate, _T("YEngine ("));
 }
 
-bool GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
+bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 	if (CONSOLE_MESSAGE) 
 		std::cout << "GFW On Create\n";
@@ -517,27 +506,31 @@ bool GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	return true;
 }
 
-void GameFramework::FrameAdvance()
+void CGameFramework::FrameAdvance()
 {
+	m_gameTimer.Tick(0.0f);
+
 	ProcessInput();
 	AnimateObjects();
+
 	D3D12_RESOURCE_BARRIER d3dResourceBarrier{ };
 	m_deviceManager.ResetCommandListAndAllocator();
 	m_deviceManager.TransitionResourceFromPresentToRenderTarget(d3dResourceBarrier);
 	m_deviceManager.SetViewportAndScissorRect();
 	m_deviceManager.ClearRenderTargetAndDepthStencil(DirectX::Colors::Azure);
-	
 	// 렌더링 코드
 	
 	//
-
 	m_deviceManager.TransitionRenderTargetToPresent(d3dResourceBarrier);
 	m_deviceManager.ExcuteCommandList();
 	m_deviceManager.WaitForGpuComplete();
 	m_deviceManager.PresentSwapChain();
+
+	m_gameTimer.GetFrameRate(m_pszFrameRate + 9, 40);
+	::SetWindowText(m_windowManager.m_hWnd, m_pszFrameRate);
 }
 
-void GameFramework::OnDestroy()
+void CGameFramework::OnDestroy()
 {
 	m_deviceManager.WaitForGpuComplete();
 	// ReleaseObjs
@@ -546,14 +539,14 @@ void GameFramework::OnDestroy()
 	
 }
 
-void GameFramework::ProcessInput()
+void CGameFramework::ProcessInput()
 {
 }
 
-void GameFramework::AnimateObjects()
+void CGameFramework::AnimateObjects()
 {
 }
 
-void GameFramework::BuildObjects()
+void CGameFramework::BuildObjects()
 {
 }

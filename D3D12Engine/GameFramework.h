@@ -1,8 +1,10 @@
 #pragma once
 
-class WindowManager {
+#include "GameTimer.h"
+
+class CWindowManager {
 public:
-	WindowManager() = default;
+	CWindowManager() = default;
 
 public:
 	void Initialize(HINSTANCE hInst, HWND hWnd, int width=800, int height=600);
@@ -15,12 +17,12 @@ public:
 	int m_clientHeight{ };
 };
 
-class D3D12DeviceManager {
+class CD3D12DeviceManager {
 public:
-	D3D12DeviceManager() = default;
+	CD3D12DeviceManager() = default;
 
 public:
-	void Initialize(const WindowManager& windowManager);
+	void Initialize(const CWindowManager& windowManager);
 	void OnDestroy();
 
 	void ResetCommandListAndAllocator();
@@ -38,12 +40,12 @@ private:
 	void InitializeDescriptorSize();
 	void Initialize4XMSAA();
 	void InitializeCommandQueueAndList();
-	void InitializeSwapChain(const WindowManager& wdManager);
+	void InitializeSwapChain(const CWindowManager& wdManager);
 	void InitializeRtvAndDsvDescriptorHeap();
-	void InitializeViewportAndScissorRect(const WindowManager& wdManager);
+	void InitializeViewportAndScissorRect(const CWindowManager& wdManager);
 
 	void CreateRenderTargetView();
-	void CreateDepthStecilView(const WindowManager& wdManager);
+	void CreateDepthStecilView(const CWindowManager& wdManager);
 private:
 	Microsoft::WRL::ComPtr<IDXGIFactory4>	m_dxgiFactory{ nullptr };
 	Microsoft::WRL::ComPtr<ID3D12Device>	m_d3dDevice{ nullptr };
@@ -82,10 +84,10 @@ private:
 	
 };
 
-class GameFramework
+class CGameFramework
 {
 public:
-	GameFramework();
+	CGameFramework();
 
 
 public:
@@ -101,7 +103,10 @@ private:
 	void BuildObjects();
 
 private:
-	WindowManager		m_windowManager;
-	D3D12DeviceManager	m_deviceManager;
+	CWindowManager		m_windowManager;
+	CD3D12DeviceManager	m_deviceManager;
+
+	CGameTimer			m_gameTimer;
+	_TCHAR				m_pszFrameRate[50];
 };
 

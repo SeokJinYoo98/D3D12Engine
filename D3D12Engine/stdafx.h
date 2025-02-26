@@ -8,6 +8,9 @@
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일
 #include <Windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
 // C 런타임 헤더 파일입니다.
 #include <iostream>
 #include <stdio.h>
@@ -24,6 +27,8 @@
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 #include <wrl.h>
+
+
 
 constexpr int FRAME_BUFFER_WIDTH = 800;
 constexpr int FRAME_BUFFER_HEIGHT = 600;
