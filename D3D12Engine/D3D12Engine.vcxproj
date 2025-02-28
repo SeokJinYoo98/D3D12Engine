@@ -133,10 +133,10 @@
     <ClInclude Include="D3D12Engine.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameTimer.h" />
-    <ClInclude Include="GraphicsPipeline.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Obejct.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -149,10 +149,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameTimer.cpp" />
-    <ClCompile Include="GraphicsPipeline.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Obejct.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>

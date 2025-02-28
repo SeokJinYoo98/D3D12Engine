@@ -1,22 +1,31 @@
 #pragma once
+
+class CShader;
+
 class CScene
 {
 public:
 	CScene() = default;
-
-	void BuildObjects(const Microsoft::WRL::ComPtr<ID3D12Device>& d3dDevice);
-	void ReleaseObjcets();
-
-	void PrepareRender(const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& d3dCommandList);
-	void Render(const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& d3dCommandList);
+	~CScene();
 	
-	void CreateGraphicsRootSignature(const Microsoft::WRL::ComPtr<ID3D12Device>& d3dDevice);
-	void CreateGraphicsPipelineState(const Microsoft::WRL::ComPtr<ID3D12Device>& d3dDevice);
+public:
+	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+
+	void BuildObjects(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice, const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList);
+	void ReleaseObjcets();
+	void ReleaseUploadBuffers();
+
+
+	void Processinput(UCHAR* pKeysBuffer);
+	void AnimateObjects(float fTimeElapsed);
+	void Render(const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList);
+
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> CreateGraphicsRootSignature(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice);
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetGraphicsRootSignautre() { return m_pGraphicsRootSignature; }
 
 private:
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pGraphicsRootSignature{ nullptr };
-	// 루트 시그니처
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPipelineState{ nullptr };
-	// 파이프라인 상태
-};
+	std::vector<std::shared_ptr<CShader>> m_pShaders;
 
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pGraphicsRootSignature{ nullptr };
+};

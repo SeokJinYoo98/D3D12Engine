@@ -3,8 +3,6 @@
 
 void CWindowManager::Initialize(HINSTANCE hInst, HWND hWnd, int width, int height)
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "WD Manager On Create\n";
 	m_hInstance = hInst;
 	m_hWnd = hWnd;
 	RECT rcClient{ };
@@ -19,8 +17,6 @@ void CWindowManager::OnDestroy()
 
 void CD3D12DeviceManager::Initialize(const CWindowManager& windowManager)
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "Device On Create\n";
 	InitializeDevice();
 	InitializeFence();
 	InitializeViewportAndScissorRect(windowManager);
@@ -173,8 +169,7 @@ void CD3D12DeviceManager::MoveToNextFrame()
 
 void CD3D12DeviceManager::InitializeDevice()
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitDevice\n";
+
 	// COM 함수나 Direct3D 함수 호출의 성공 여부를 나타내는 값.
 	HRESULT hResult{ };
 
@@ -219,14 +214,10 @@ void CD3D12DeviceManager::InitializeDevice()
 			IID_PPV_ARGS(&m_pD3dDevice)
 		);
 	}
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitDevice End\n";
 }
 
 void CD3D12DeviceManager::InitializeFence()
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "Init Fence\n";
 	HRESULT hResult = m_pD3dDevice->CreateFence(
 		0,
 		D3D12_FENCE_FLAG_NONE,
@@ -238,31 +229,22 @@ void CD3D12DeviceManager::InitializeFence()
 		펜스와 동기화를 위한 이벤트 객체 생성
 		이벤트가 실행되면 이벤트 값을 자동적으로 FALSE가 되도록 생성한다.
 	*/
-	if (CONSOLE_MESSAGE)
-		std::cout << "Init Fence end\n";
 }
 
 // 각 서술자의 크기를 GPU에서 직접 조회하여 저장
 // Descirptor Heap내에서 특정 서술자의 위치를 찾을 때 사용
 void CD3D12DeviceManager::InitializeDescriptorSize()
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeDescriptorSize\n";
 	m_nRtvDescriptorSize = m_pD3dDevice->GetDescriptorHandleIncrementSize(
 		D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	m_nDsvDescriptorSize = m_pD3dDevice->GetDescriptorHandleIncrementSize(
 		D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 	m_nCbvSrcDescriptorSize = m_pD3dDevice->GetDescriptorHandleIncrementSize(
 		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeDescriptorSize end\n";
 }
 
 void CD3D12DeviceManager::Initialize4XMSAA()
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "Initialize4XMSAA\n";
 	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS d3dMsaaQualityLevels{ };
 
 	d3dMsaaQualityLevels.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -282,14 +264,10 @@ void CD3D12DeviceManager::Initialize4XMSAA()
 	m_nMsaa4xQuality = d3dMsaaQualityLevels.NumQualityLevels;
 	
 	m_bMsaa4xEnable = (m_nMsaa4xQuality > 1) ? true : false;
-	if (CONSOLE_MESSAGE)
-		std::cout << "Initialize4XMSAA end\n";
 }
 
 void CD3D12DeviceManager::InitializeCommandQueueAndList()
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeCommandQueueAndList\n";
 
 	D3D12_COMMAND_QUEUE_DESC queueDesc{ };
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -311,16 +289,10 @@ void CD3D12DeviceManager::InitializeCommandQueueAndList()
 
 	//명령 리스트는 생성되면 열린(Open) 상태이므로 닫힌(Closed) 상태로 만든다.
 	m_pCommandList->Close();
-
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeCommandQueueAndList end\n";
 }
 
 void CD3D12DeviceManager::InitializeSwapChain(const CWindowManager& wdManager)
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeSwapChain\n";
-
 	m_pSwapChain.Reset();
 
 	RECT rcClient{ };
@@ -365,10 +337,6 @@ void CD3D12DeviceManager::InitializeSwapChain(const CWindowManager& wdManager)
 	// 알트엔터 비활성
 	m_nSwapChainBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 	// 스왑체인 버퍼 인덱스 저장
-
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeSwapChain end\n";
-
 }
 
 void CD3D12DeviceManager::InitializeRtvAndDsvDescriptorHeap()
@@ -404,8 +372,6 @@ void CD3D12DeviceManager::InitializeRtvAndDsvDescriptorHeap()
 
 void CD3D12DeviceManager::InitializeViewportAndScissorRect(const CWindowManager& wdManager)
 {
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeViewportAndScissorRect\n";
 	int width = wdManager.m_nclientWidth;
 	int height = wdManager.m_nclientHeight;
 
@@ -418,8 +384,6 @@ void CD3D12DeviceManager::InitializeViewportAndScissorRect(const CWindowManager&
 
 	//뷰포트를 주 윈도우의 클라이언트 영역 전체로 설정한다. 
 	m_d3dScissorRect = { 0, 0, width, height };
-	if (CONSOLE_MESSAGE)
-		std::cout << "InitializeViewportAndScissorRect end\n";
 } 
 
 void CD3D12DeviceManager::CreateRenderTargetView()
@@ -498,16 +462,11 @@ CGameFramework::CGameFramework()
 
 bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
-	if (CONSOLE_MESSAGE) 
-		std::cout << "GFW On Create\n";
-	
 	m_windowManager.Initialize(hInstance, hMainWnd);
 	m_deviceManager.Initialize(m_windowManager);
 
 	BuildObjects();
 
-	if (CONSOLE_MESSAGE)
-		std::cout << "GFW On Create end\n";
 	return true;
 }
 
@@ -569,6 +528,25 @@ void CGameFramework::AnimateObjects()
 
 void CGameFramework::BuildObjects()
 {
+	auto& pCommandList = m_deviceManager.m_pCommandList;
+
+	pCommandList->Reset(m_deviceManager.m_pCommandAllocator.Get(), nullptr);
+
+	// 씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성
 	m_pScene = std::make_unique<CScene>();
-	if (m_pScene) m_pScene->BuildObjects(m_deviceManager.m_pD3dDevice);
+	m_pScene->BuildObjects(m_deviceManager.m_pD3dDevice, m_deviceManager.m_pCommandList);
+
+	// 씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가한다.
+	pCommandList->Close();
+	ID3D12CommandList* ppd3dCommandLists[] = { pCommandList.Get()};
+	m_deviceManager.m_pCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+	// 그래픽 명령 리스트들이 모두 실행될 때 까지 기다린다.
+	m_deviceManager.WaitForGpuComplete();
+
+	// 그래픽 리소스들을 생성하는 과정에 생성된 업로드 버퍼들을 소멸시킨다.
+	if (m_pScene)
+		m_pScene->ReleaseUploadBuffers();
+
+	m_gameTimer.Reset();
 }
