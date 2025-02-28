@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameTimer.h"
+#include "Scene.h"
 
 class CWindowManager {
 public:
@@ -13,8 +14,8 @@ public:
 	HINSTANCE	m_hInstance{ nullptr };
 	HWND		m_hWnd{ nullptr };
 
-	int m_clientWidth{ };
-	int m_clientHeight{ };
+	int m_nclientWidth{ };
+	int m_nclientHeight{ };
 };
 
 class CD3D12DeviceManager {
@@ -34,6 +35,7 @@ public:
 	void WaitForGpuComplete();
 	void PresentSwapChain();
 
+	void MoveToNextFrame();
 private:
 	void InitializeDevice();
 	void InitializeFence();
@@ -46,37 +48,40 @@ private:
 
 	void CreateRenderTargetView();
 	void CreateDepthStecilView(const CWindowManager& wdManager);
-private:
-	Microsoft::WRL::ComPtr<IDXGIFactory4>	m_dxgiFactory{ nullptr };
-	Microsoft::WRL::ComPtr<ID3D12Device>	m_d3dDevice{ nullptr };
-	Microsoft::WRL::ComPtr<IDXGISwapChain3>	m_swapChain{ nullptr };
 
-	Microsoft::WRL::ComPtr<ID3D12Fence>		m_d3dFence{ nullptr };
-	UINT64 m_fenceValue{ 0 };
-	HANDLE m_fenceEvent{ };
+public:
+	static const UINT nSwapChainBufferCount{ 2 };
 
-	UINT m_RtvDescriptorSize{ 0 };
-	UINT m_DsvDescriptorSize{ 0 };
-	UINT m_CbvSrcDescriptorSize{ 0 };
+	Microsoft::WRL::ComPtr<IDXGIFactory4>	m_pFactory{ nullptr };
+	Microsoft::WRL::ComPtr<ID3D12Device>	m_pD3dDevice{ nullptr };
+	Microsoft::WRL::ComPtr<IDXGISwapChain3>	m_pSwapChain{ nullptr };
 
-	UINT m_4xMsaaQuality{ 0 };
-	BOOL m_4xMsaaEnable{ false };
+	Microsoft::WRL::ComPtr<ID3D12Fence>		m_pFence{ nullptr };
+	UINT64 m_nFenceValues[nSwapChainBufferCount]{ };
+	HANDLE m_hFenceEvent{ };
 
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue>			m_commandQueue{ nullptr };
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator>		m_directCmdListAlloc{ nullptr };
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_commandList{ nullptr };
+	UINT m_nRtvDescriptorSize{ 0 };
+	UINT m_nDsvDescriptorSize{ 0 };
+	UINT m_nCbvSrcDescriptorSize{ 0 };
 
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_rtvHeap{ nullptr };
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_dsvHeap{ nullptr };
+	UINT m_nMsaa4xQuality{ 0 };
+	BOOL m_bMsaa4xEnable{ false };
+
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue>			m_pCommandQueue{ nullptr };
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator>		m_pCommandAllocator{ nullptr };
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_pCommandList{ nullptr };
+
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_pRtvHeap{ nullptr };
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_pDsvHeap{ nullptr };
 	UINT m_dsvDescriptorIncrementSize{ 0 };
 	UINT m_rtvDescriptorIncrementSize{ 0 };
 
-	static const UINT SwapChainBufferCount{ 2 };
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> m_swapChainBuffer[SwapChainBufferCount]{ };
-	UINT m_swapChainBufferIndex{ 0 };
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> m_depthStencilBuffer{ nullptr };
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_pSwapChainBuffers[nSwapChainBufferCount]{ };
+	UINT m_nSwapChainBufferIndex{ 0 };
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_pDepthStencilBuffer{ nullptr };
 
 	D3D12_VIEWPORT  m_d3dViewport{ };
 	D3D12_RECT		m_d3dScissorRect{ };
@@ -105,6 +110,7 @@ private:
 private:
 	CWindowManager		m_windowManager;
 	CD3D12DeviceManager	m_deviceManager;
+	std::unique_ptr<CScene> m_pScene;
 
 	CGameTimer			m_gameTimer;
 	_TCHAR				m_pszFrameRate[50];

@@ -18,7 +18,10 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+
 #include <string>
+#include <memory>
+#include <vector>
 
 #include <dxgi1_4.h>
 #include <d3d12.h>
@@ -28,7 +31,16 @@
 #include <DirectXColors.h>
 #include <wrl.h>
 
+namespace Direction {
+	constexpr DirectX::XMFLOAT3 ORIGIN_POINT{ 0.0f, 0.0f, 0.0f };
 
+	constexpr DirectX::XMFLOAT3 UP		{ +0.0f, +1.0f, +0.0f };
+	constexpr DirectX::XMFLOAT3 DOWN	{ +0.0f, -1.0f, +0.0f };
+	constexpr DirectX::XMFLOAT3 LEFT	{ -1.0f, +0.0f, +0.0f };
+	constexpr DirectX::XMFLOAT3 RIGTH	{ +1.0f, +0.0f, +0.0f };
+	constexpr DirectX::XMFLOAT3 FORWARD	{ +0.0f, +0.0f, +1.0f };
+	constexpr DirectX::XMFLOAT3 BACKWARD{ +0.0f, +0.0f, -1.0f };
+}
 
 constexpr int FRAME_BUFFER_WIDTH = 800;
 constexpr int FRAME_BUFFER_HEIGHT = 600;
