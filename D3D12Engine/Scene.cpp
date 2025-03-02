@@ -1,82 +1,96 @@
 #include "stdafx.h"
 #include "Scene.h"
-#include "Shader.h"
 
 CScene::~CScene()
 {
 }
 
-void CScene::BuildObjects(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice, const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList)
+void CScene::BuildObjects(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
 {
 	// 그래픽 루트 시그니쳐 생성
-	m_pGraphicsRootSignature = CreateGraphicsRootSignature(pDevice);
+	CreateGraphicsRootSignature(pDevice);
 
-	// 씬을 그리기 위한 셰이더 객체 생성
-	m_pShaders.reserve(1);
+	m_pGameObjects.resize(1);
+	m_pGameObjects[0] = std::make_unique<CRotatingObject>();
 
-	auto newShader = std::make_shared<CShader>();
-	newShader->CreateShader(pDevice, m_pGraphicsRootSignature);
-	newShader->BuildObjects(pDevice, pCommandList, nullptr);
+	auto pMesh = std::make_shared<CTriangleMesh>(pDevice, pCommandList);
+	m_pGameObjects[0]->SetMesh(pMesh);
 
-	m_pShaders.push_back(newShader);
+	auto pShader = std::make_shared<CDiffusedShader>();
+	pShader->CreateShader(pDevice, m_pGraphicsRootSignature.Get());
+	pShader->CreateShaderVariables(pDevice, pCommandList);
+	m_pGameObjects[0]->SetShader(pShader);
 }
 
 void CScene::ReleaseObjcets()
 {
-	if (m_pGraphicsRootSignature) m_pGraphicsRootSignature->Release();
-
-	for (auto& pShader : m_pShaders) {
-		pShader->ReleaseShaderVariables();
-		pShader->ReleaseObjcets();
-	}
-	m_pShaders.clear();
 }
 
 void CScene::ReleaseUploadBuffers()
 {
-	for (auto& pShader : m_pShaders) 
-		pShader->ReleaseUploadBuffers();
+	for (auto& pObject : m_pGameObjects) {
+		if (pObject) pObject->ReleaseUploadBuffers();
+	}
+	
 }
 
 void CScene::AnimateObjects(float fTimeElapsed)
 {
-	for (auto& pShader : m_pShaders) {
-		pShader->AnimateObjects(fTimeElapsed);
+	for (auto& pObject : m_pGameObjects) {
+		if (pObject) pObject->Animate(fTimeElapsed);
 	}
 }
 
-void CScene::Render(const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList)
+void CScene::Render(ID3D12GraphicsCommandList* pCommandList, CCamera* camera)
 {
-	// 루트 시그니처를 파이프라인에 연결한다.
+	camera->SetViewportsAndScissorRects(pCommandList);
 	pCommandList->SetGraphicsRootSignature(m_pGraphicsRootSignature.Get());
 
-	// 씬을 렌더링 하는 것은 씬을 구성하는 셰이더들을 렌더링 하는 것이다.
-	for (auto& pShader : m_pShaders) {
-		pShader->Render(pCommandList);
+	camera->UpdateShaderVariables(pCommandList);
+
+	// 씬을 렌더링 하는 것은 씬을 구성하는 게임 객체들을 렌더링하는 것
+	for (auto& pObject : m_pGameObjects) {
+		if (pObject) pObject->Render(pCommandList, camera);
 	}
 }
 
-Microsoft::WRL::ComPtr<ID3D12RootSignature> CScene::CreateGraphicsRootSignature(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice)
+void CScene::CreateGraphicsRootSignature(ID3D12Device* pDevice)
 {
-	ID3D12RootSignature* pd3dGraphicsRootSignature = nullptr;
-	//매개변수가 없는 루트 시그너쳐를 생성한다. 
-	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc{ };
-	d3dRootSignatureDesc.NumParameters = 0;
-	d3dRootSignatureDesc.pParameters = nullptr;
+	D3D12_ROOT_PARAMETER pd3dRootParameters[2]{ };
+	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+	pd3dRootParameters[0].Constants.Num32BitValues = 16;
+	pd3dRootParameters[0].Constants.ShaderRegister = 0;
+	pd3dRootParameters[0].Constants.RegisterSpace = 0;
+	pd3dRootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	pd3dRootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+	pd3dRootParameters[1].Constants.Num32BitValues = 32;
+	pd3dRootParameters[1].Constants.ShaderRegister = 1;
+	pd3dRootParameters[1].Constants.RegisterSpace = 0;
+	pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+
+	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+
+	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
+	::ZeroMemory(&d3dRootSignatureDesc, sizeof(D3D12_ROOT_SIGNATURE_DESC));
+	d3dRootSignatureDesc.NumParameters = _countof(pd3dRootParameters);
+	d3dRootSignatureDesc.pParameters = pd3dRootParameters;
 	d3dRootSignatureDesc.NumStaticSamplers = 0;
 	d3dRootSignatureDesc.pStaticSamplers = nullptr;
-	d3dRootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
+
 	ID3DBlob* pd3dSignatureBlob = nullptr;
 	ID3DBlob* pd3dErrorBlob = nullptr;
-	::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1,
-		&pd3dSignatureBlob, &pd3dErrorBlob);
-	pDevice->CreateRootSignature(
-		0, 
-		pd3dSignatureBlob->GetBufferPointer(),
-		pd3dSignatureBlob->GetBufferSize(),
-		IID_PPV_ARGS(&pd3dGraphicsRootSignature)
-	);
+	::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+
+	//TODO
+	HRESULT hResult = pDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(),
+		pd3dSignatureBlob->GetBufferSize(), IID_PPV_ARGS(m_pGraphicsRootSignature.GetAddressOf()));
+
 	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
 	if (pd3dErrorBlob) pd3dErrorBlob->Release();
-	return(pd3dGraphicsRootSignature);
 }

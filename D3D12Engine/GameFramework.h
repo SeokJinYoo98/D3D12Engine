@@ -2,6 +2,9 @@
 
 #include "GameTimer.h"
 #include "Scene.h"
+#include "Camera.h"
+
+class CCamera;
 
 class CWindowManager {
 public:
@@ -28,7 +31,6 @@ public:
 
 	void ResetCommandListAndAllocator();
 	void TransitionResourceFromPresentToRenderTarget(D3D12_RESOURCE_BARRIER& d3dResourceBarrier);
-	void SetViewportAndScissorRect();
 	void ClearRenderTargetAndDepthStencil(const DirectX::XMVECTOR& clearColor);
 	void TransitionRenderTargetToPresent(D3D12_RESOURCE_BARRIER& d3dResourceBarrier);
 	void ExcuteCommandList();
@@ -44,7 +46,6 @@ private:
 	void InitializeCommandQueueAndList();
 	void InitializeSwapChain(const CWindowManager& wdManager);
 	void InitializeRtvAndDsvDescriptorHeap();
-	void InitializeViewportAndScissorRect(const CWindowManager& wdManager);
 
 	void CreateRenderTargetView();
 	void CreateDepthStecilView(const CWindowManager& wdManager);
@@ -82,9 +83,6 @@ public:
 	UINT m_nSwapChainBufferIndex{ 0 };
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_pDepthStencilBuffer{ nullptr };
-
-	D3D12_VIEWPORT  m_d3dViewport{ };
-	D3D12_RECT		m_d3dScissorRect{ };
 private:
 	
 };
@@ -110,7 +108,9 @@ private:
 private:
 	CWindowManager		m_windowManager;
 	CD3D12DeviceManager	m_deviceManager;
-	std::unique_ptr<CScene> m_pScene;
+
+	std::unique_ptr<CScene>		m_pScene;
+	std::unique_ptr<CCamera>	m_pCamera;
 
 	CGameTimer			m_gameTimer;
 	_TCHAR				m_pszFrameRate[50];

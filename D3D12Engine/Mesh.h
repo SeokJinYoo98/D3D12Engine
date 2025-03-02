@@ -47,8 +47,7 @@ public:
 
 class CMesh {
 public:
-	CMesh(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice, 
-		const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList);
+	CMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
 
 	virtual ~CMesh();
 
@@ -68,13 +67,12 @@ protected:
 	UINT m_nOffset = 0;
 
 public:
-	virtual void Render(const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList);
+	virtual void Render(ID3D12GraphicsCommandList* pCommandList);
 };
 
 class CTriangleMesh : public CMesh {
 public:
-	CTriangleMesh(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice,
-		const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList);
+	CTriangleMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
 
 	virtual ~CTriangleMesh() { }
 };

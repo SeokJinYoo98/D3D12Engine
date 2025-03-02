@@ -17,7 +17,7 @@ void CPolygon::SetVertexVector(std::vector<int>&& nVertices)
 	m_nVertexIndices = std::move(nVertices);
 }
 
-CMesh::CMesh(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice, const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList)
+CMesh::CMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
 	: m_d3dPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 {
 }
@@ -37,7 +37,7 @@ void CMesh::ReleaseUploadBuffers()
 		
 }
 
-void CMesh::Render(const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList)
+void CMesh::Render(ID3D12GraphicsCommandList* pCommandList)
 {
 	// 메시의 프리미티브 유형을 설정
 	pCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
@@ -47,7 +47,7 @@ void CMesh::Render(const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCom
 	pCommandList->DrawInstanced(m_nVertices, 1, m_nOffset, 0);
 }
 
-CTriangleMesh::CTriangleMesh(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice, const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList)
+CTriangleMesh::CTriangleMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
 	:CMesh(pDevice, pCommandList)
 {
 	// 삼각형 메쉬를 설정
@@ -64,8 +64,8 @@ CTriangleMesh::CTriangleMesh(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice
 
 	// 삼각형 메쉬를 리소스로 생성
 	m_pVertexBuffer = ResourceHelper::CreateBufferResource(
-		pDevice.Get(),
-		pCommandList.Get(),
+		pDevice,
+		pCommandList,
 		pVertices,
 		m_nStride * m_nVertices,
 		D3D12_HEAP_TYPE_DEFAULT,

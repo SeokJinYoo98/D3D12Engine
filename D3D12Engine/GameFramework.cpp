@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
+
 void CWindowManager::Initialize(HINSTANCE hInst, HWND hWnd, int width, int height)
 {
 	m_hInstance = hInst;
@@ -19,7 +20,6 @@ void CD3D12DeviceManager::Initialize(const CWindowManager& windowManager)
 {
 	InitializeDevice();
 	InitializeFence();
-	InitializeViewportAndScissorRect(windowManager);
 	InitializeDescriptorSize();
 	Initialize4XMSAA();
 	InitializeCommandQueueAndList();
@@ -49,9 +49,7 @@ void CD3D12DeviceManager::ResetCommandListAndAllocator()
 {
 	// 명령 할당자와 명령 리스트를 리셋한다.
 	HRESULT hResult = m_pCommandAllocator->Reset();
-	if (FAILED(hResult)) throw std::runtime_error("Command Alloc reset failed");
 	hResult = m_pCommandList->Reset(m_pCommandAllocator.Get(), nullptr);
-	if (FAILED(hResult)) throw std::runtime_error("Command List reset failed");
 }
 
 void CD3D12DeviceManager::TransitionResourceFromPresentToRenderTarget(D3D12_RESOURCE_BARRIER& d3dResourceBarrier)
@@ -67,12 +65,6 @@ void CD3D12DeviceManager::TransitionResourceFromPresentToRenderTarget(D3D12_RESO
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	m_pCommandList->ResourceBarrier(1, &d3dResourceBarrier);
-}
-
-void CD3D12DeviceManager::SetViewportAndScissorRect()
-{
-	m_pCommandList->RSSetViewports(1, &m_d3dViewport);
-	m_pCommandList->RSSetScissorRects(1, &m_d3dScissorRect);
 }
 
 void CD3D12DeviceManager::ClearRenderTargetAndDepthStencil(const DirectX::XMVECTOR& xmvClearColor)
@@ -370,21 +362,7 @@ void CD3D12DeviceManager::InitializeRtvAndDsvDescriptorHeap()
 		m_pD3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 }
 
-void CD3D12DeviceManager::InitializeViewportAndScissorRect(const CWindowManager& wdManager)
-{
-	int width = wdManager.m_nclientWidth;
-	int height = wdManager.m_nclientHeight;
 
-	m_d3dViewport.TopLeftX = 0;
-	m_d3dViewport.TopLeftY = 0;
-	m_d3dViewport.Width = static_cast<float>(width);
-	m_d3dViewport.Height = static_cast<float>(height);
-	m_d3dViewport.MinDepth = 0.0f;
-	m_d3dViewport.MaxDepth = 1.0f;
-
-	//뷰포트를 주 윈도우의 클라이언트 영역 전체로 설정한다. 
-	m_d3dScissorRect = { 0, 0, width, height };
-} 
 
 void CD3D12DeviceManager::CreateRenderTargetView()
 {
@@ -491,11 +469,10 @@ void CGameFramework::FrameAdvance()
 	//m_deviceManager.PresentSwapChain();
 
 	m_deviceManager.ResetCommandListAndAllocator();
-	m_deviceManager.SetViewportAndScissorRect();
 	D3D12_RESOURCE_BARRIER d3dResourceBarrier{ };
 	m_deviceManager.TransitionResourceFromPresentToRenderTarget(d3dResourceBarrier);
 	m_deviceManager.ClearRenderTargetAndDepthStencil(DirectX::Colors::Azure);
-	if (m_pScene) m_pScene->Render(m_deviceManager.m_pCommandList);
+	if (m_pScene) m_pScene->Render(m_deviceManager.m_pCommandList.Get(), m_pCamera.get());
 	m_deviceManager.TransitionRenderTargetToPresent(d3dResourceBarrier);
 	m_deviceManager.ExcuteCommandList();
 
@@ -524,6 +501,7 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
+	if (m_pScene) m_pScene->AnimateObjects(m_gameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::BuildObjects()
@@ -532,9 +510,16 @@ void CGameFramework::BuildObjects()
 
 	pCommandList->Reset(m_deviceManager.m_pCommandAllocator.Get(), nullptr);
 
+	// 카메라 객체를 생성하고, 뷰포트, 씨저, 투영-뷰 변환 행렬을 생성하고 설정
+	m_pCamera = std::make_unique<CCamera>();
+	m_pCamera->SetViewport(0, 0, m_windowManager.m_nclientWidth, m_windowManager.m_nclientHeight, 0.0f, 1.0f);
+	m_pCamera->SetScissorRect(0, 0, m_windowManager.m_nclientWidth, m_windowManager.m_nclientHeight);
+	m_pCamera->GenerateProjectionMatrix(1.0f, 500.f, float(m_windowManager.m_nclientWidth) / float(m_windowManager.m_nclientHeight), 90.f);
+	m_pCamera->GenerateViewMatrix(DirectX::XMFLOAT3(0.0f, 0.0f, -2.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+
 	// 씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성
 	m_pScene = std::make_unique<CScene>();
-	m_pScene->BuildObjects(m_deviceManager.m_pD3dDevice, m_deviceManager.m_pCommandList);
+	m_pScene->BuildObjects(m_deviceManager.m_pD3dDevice.Get(), m_deviceManager.m_pCommandList.Get());
 
 	// 씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가한다.
 	pCommandList->Close();
@@ -545,8 +530,7 @@ void CGameFramework::BuildObjects()
 	m_deviceManager.WaitForGpuComplete();
 
 	// 그래픽 리소스들을 생성하는 과정에 생성된 업로드 버퍼들을 소멸시킨다.
-	if (m_pScene)
-		m_pScene->ReleaseUploadBuffers();
+	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
 	m_gameTimer.Reset();
 }
