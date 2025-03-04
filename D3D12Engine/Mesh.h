@@ -1,18 +1,16 @@
 #pragma once
-using namespace DirectX;
-
 class CVertex {
 public:
 	CVertex() 
 		: m_xmf3Position{ } { }
 	CVertex(float x, float y, float z)
 		: m_xmf3Position { x, y, z } {  }
-	CVertex(const XMFLOAT3& position)
+	CVertex(const DirectX::XMFLOAT3& position)
 		: m_xmf3Position{ position } { }
 
 	~CVertex(){ }
 protected:
-	XMFLOAT3 m_xmf3Position;
+	DirectX::XMFLOAT3 m_xmf3Position;
 };
 
 class CDiffusedVertex : public CVertex {
@@ -21,35 +19,29 @@ public:
 		: CVertex(), m_xmf4Diffuse{ } { }
 	CDiffusedVertex(float x, float y, float z, float r, float g, float b, float a=1.0f)
 		: CVertex(x, y, z), m_xmf4Diffuse{r, g, b, a} {  }
-	CDiffusedVertex(float x, float y, float z, const XMFLOAT4& diffuse)
+	CDiffusedVertex(float x, float y, float z, const DirectX::XMFLOAT4& diffuse)
 		: CVertex(x, y, z), m_xmf4Diffuse{diffuse} {  }
-	CDiffusedVertex(const XMFLOAT3& position, float r, float g, float b, float a=1.0f)
+	CDiffusedVertex(const DirectX::XMFLOAT3& position, float r, float g, float b, float a=1.0f)
 		: CVertex(position), m_xmf4Diffuse{r, g, b, a} {  }
-	CDiffusedVertex(const XMFLOAT3& position, const XMFLOAT4& diffuse)
+	CDiffusedVertex(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT4& diffuse)
 		: CVertex(position), m_xmf4Diffuse(diffuse){  }
 
 	~CDiffusedVertex() { }
 
 protected:
 	// 정점의 색
-	XMFLOAT4 m_xmf4Diffuse;
+	DirectX::XMFLOAT4 m_xmf4Diffuse;
 };
-class CPolygon {
-public:
-	CPolygon() = default;
-	CPolygon(int nIndices);
 
-	void AddVertexIndex(int nIndex);
-	void SetVertexVector(std::vector<int>&& nVertices);
-public:
-	std::vector<int> m_nVertexIndices;
-};
 
 class CMesh {
 public:
 	CMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
 
 	virtual ~CMesh();
+private:
+	virtual void CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) { }
+	virtual void CreateIndexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) { }
 
 public:
 	void ReleaseUploadBuffers();
@@ -57,15 +49,21 @@ public:
 protected:
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_pVertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_pVertexUploadBuffer;
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_pIndexBuffer;
+	Microsoft::WRL::ComPtr<ID3D12Resource> m_pIndexUploadBuffer;
 
 	D3D12_VERTEX_BUFFER_VIEW m_d3dVertexBufferView;
-
+	D3D12_INDEX_BUFFER_VIEW m_d3dIndexBufferView;
 	D3D12_PRIMITIVE_TOPOLOGY m_d3dPrimitiveTopology;
-	UINT m_nSlot = 0;
-	UINT m_nVertices = 0;
-	UINT m_nStride = 0;
-	UINT m_nOffset = 0;
 
+	UINT m_nSlot;
+	UINT m_nVertices;
+	UINT m_nStride;
+	UINT m_nOffset;
+
+	UINT m_nIndices;
+	UINT m_nIndexOffset;
+	UINT m_nIndexStride{ };
 public:
 	virtual void Render(ID3D12GraphicsCommandList* pCommandList);
 };
@@ -73,6 +71,18 @@ public:
 class CTriangleMesh : public CMesh {
 public:
 	CTriangleMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
+	~CTriangleMesh() { }
 
-	virtual ~CTriangleMesh() { }
+private:
+	void CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) override;
+	void CreateIndexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) override;
+};
+
+class CCubeMesh :public CMesh {
+public:
+	CCubeMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
+
+private:
+	void CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) override;
+	void CreateIndexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) override;
 };

@@ -9,7 +9,7 @@ public:
 	virtual ~CGameObject();
 
 protected:
-	XMFLOAT4X4 m_xmf4x4World;
+	DirectX::XMFLOAT4X4 m_xmf4x4World;
 
 	std::shared_ptr<CMesh> m_pMesh;
 	std::shared_ptr<CShader> m_pShader;

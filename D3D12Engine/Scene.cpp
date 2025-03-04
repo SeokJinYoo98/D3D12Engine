@@ -11,9 +11,10 @@ void CScene::BuildObjects(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCom
 	CreateGraphicsRootSignature(pDevice);
 
 	m_pGameObjects.resize(1);
-	m_pGameObjects[0] = std::make_unique<CRotatingObject>();
-
-	auto pMesh = std::make_shared<CTriangleMesh>(pDevice, pCommandList);
+	auto rtObj = std::make_unique<CRotatingObject>();
+	rtObj->SetRotationAxis(Direction::LEFT);
+	m_pGameObjects[0] = std::move(rtObj);
+	auto pMesh = std::make_shared<CCubeMesh>(pDevice, pCommandList);
 	m_pGameObjects[0]->SetMesh(pMesh);
 
 	auto pShader = std::make_shared<CDiffusedShader>();

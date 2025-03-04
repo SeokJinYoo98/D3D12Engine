@@ -4,7 +4,7 @@
 
 CGameObject::CGameObject()
 {
-	XMStoreFloat4x4(&m_xmf4x4World, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_xmf4x4World, DirectX::XMMatrixIdentity());
 }
 
 CGameObject::~CGameObject()
@@ -13,7 +13,7 @@ CGameObject::~CGameObject()
 
 void CGameObject::Rotate(const DirectX::XMFLOAT3& xmf3Axis, float fAngle)
 {
-	auto mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&xmf3Axis), XMConvertToRadians(fAngle));
+	auto mtxRotate = DirectX::XMMatrixRotationAxis(XMLoadFloat3(&xmf3Axis), DirectX::XMConvertToRadians(fAngle));
 	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
 }
 

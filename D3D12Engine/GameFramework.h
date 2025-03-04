@@ -5,7 +5,6 @@
 #include "Camera.h"
 
 class CCamera;
-
 class CWindowManager {
 public:
 	CWindowManager() = default;

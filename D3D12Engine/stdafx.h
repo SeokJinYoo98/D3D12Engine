@@ -28,6 +28,7 @@
 #include <dxgi1_4.h>
 #include <d3d12.h>
 #include <d3dcompiler.h>
+#include <dxgidebug.h>
 
 #include <DirectXMath.h>
 #include <DirectXColors.h>
@@ -40,16 +41,29 @@ constexpr int FRAME_BUFFER_HEIGHT = 600;
 extern bool CONSOLE_MESSAGE;
 
 namespace Random {
-	std::random_device rd{ };
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution uid{ };
-	std::uniform_real_distribution<float> ufd{ 0.0f, 1.0f };
-	std::uniform_real_distribution<double> udd{ 0.0, 1.0 };
+	class Generator {
+	public:
+		Generator(): m_gen(std::random_device{}()) { }
 
-	int GetRandomInt(int minValue=0, int maxValue=100);
-	float GetRandomFloat(float minValue = 0.0f, float maxValue = 1.0f);
-	double GetRandomDouble(double minValue = 0.0, double maxValue = 1.0);
-
+		int GetRandomInt(int minValue = 0, int maxValue = 100) {
+			std::uniform_int_distribution<int> dist(minValue, maxValue);
+			return dist(m_gen);
+		}
+		float GetRandomFloat(float minValue = 0.0f, float maxValue = 1.0f) {
+			std::uniform_real_distribution<float> dist(minValue, maxValue);
+			return dist(m_gen);
+		}
+		double GetRandomDouble(double minValue = 0.0, double maxValue = 1.0) {
+			std::uniform_real_distribution<double> dist(minValue, maxValue);
+			return dist(m_gen);
+		}
+	private:
+		std::mt19937 m_gen;
+	};
+	inline Generator& GetInstance() {
+		static Generator instance;
+		return instance;
+	}
 }
 
 
