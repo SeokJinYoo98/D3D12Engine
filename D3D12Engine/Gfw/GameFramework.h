@@ -1,10 +1,9 @@
 #pragma once
 
 #include "GameTimer.h"
-#include "Scene.h"
-#include "Camera.h"
+#include "Core\Scene.h"
+#include "Core\Camera.h"
 
-class CCamera;
 class CWindowManager {
 public:
 	CWindowManager() = default;

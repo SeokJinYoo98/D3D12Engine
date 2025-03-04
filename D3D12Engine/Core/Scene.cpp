@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "Scene.h"
+#include "Common\pch.h"
+#include "Core\Scene.h"
 
 CScene::~CScene()
 {

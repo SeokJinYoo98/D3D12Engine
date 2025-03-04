@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Common\pch.h"
 #include "GameFramework.h"
 
 

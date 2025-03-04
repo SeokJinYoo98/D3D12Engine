@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "Camera.h"
+#include "Common\pch.h"
+#include "Core\Camera.h"
 
 CCamera::CCamera()
 	: m_xmf4x4View{ Matrix4x4::Identity() }, m_xmf4x4Projection{ Matrix4x4::Identity() },

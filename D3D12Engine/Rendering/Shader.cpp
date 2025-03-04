@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Common\pch.h"
 #include "Shader.h"
 
 CShader::CShader()
@@ -148,8 +148,8 @@ void CShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pRootSign
 
 	if (pd3dVertexShaderBlob) pd3dVertexShaderBlob->Release();
 	if (pd3dPixelShaderBlob) pd3dPixelShaderBlob->Release();
-	if (d3dPipelineStateDesc.InputLayout.pInputElementDescs) delete[]
-		d3dPipelineStateDesc.InputLayout.pInputElementDescs;
+	if (d3dPipelineStateDesc.InputLayout.pInputElementDescs) 
+		delete[] d3dPipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
 void CShader::CreateShaderVariables(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
@@ -214,7 +214,7 @@ D3D12_INPUT_LAYOUT_DESC CDiffusedShader::CreateInputLayout()
 		0 
 	};
 
-	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc{ };
 	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
 	d3dInputLayoutDesc.NumElements = nInputElementDescs;
 
@@ -223,12 +223,12 @@ D3D12_INPUT_LAYOUT_DESC CDiffusedShader::CreateInputLayout()
 
 D3D12_SHADER_BYTECODE CDiffusedShader::CreateVertexShader(ID3DBlob** ppShaderBlob)
 {
-	return CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSDiffused", "vs_5_1", ppShaderBlob);
+	return CShader::CompileShaderFromFile(L"Assets/Shaders/Shaders.hlsl", "VSDiffused", "vs_5_1", ppShaderBlob);
 }
 
 D3D12_SHADER_BYTECODE CDiffusedShader::CreatePixelShader(ID3DBlob** ppShaderBlob)
 {
-	return CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSDiffused", "ps_5_1", ppShaderBlob);
+	return CShader::CompileShaderFromFile(L"Assets/Shaders/Shaders.hlsl", "PSDiffused", "ps_5_1", ppShaderBlob);
 }
 
 void CDiffusedShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pGraphicsRootSignature)

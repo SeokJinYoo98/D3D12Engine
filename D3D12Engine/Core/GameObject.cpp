@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include "GameObject.h"
-#include "Camera.h"
+#include "Common/pch.h"
+#include "Core\GameObject.h"
+#include "Core\Camera.h"
 
 CGameObject::CGameObject()
 {

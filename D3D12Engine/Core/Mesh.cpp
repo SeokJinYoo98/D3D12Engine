@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "Mesh.h"
+#include "Common\pch.h"
+#include "Core\Mesh.h"
 
 using namespace DirectX;
 

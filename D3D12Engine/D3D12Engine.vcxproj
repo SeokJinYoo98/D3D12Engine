@@ -122,6 +122,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common\pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)D3D12Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,44 +134,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="D3D12Engine.h" />
-    <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="GameTimer.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Core\Camera.h" />
+    <ClInclude Include="Gfw\D3D12Engine.h" />
+    <ClInclude Include="Gfw\GameFramework.h" />
+    <ClInclude Include="Gfw\GameTimer.h" />
+    <ClInclude Include="Core\Mesh.h" />
+    <ClInclude Include="Core\GameObject.h" />
+    <ClInclude Include="Core\Scene.h" />
+    <ClInclude Include="Rendering\Shader.h" />
+    <ClInclude Include="Common\pch.h" />
+    <ClInclude Include="Resources\Resource.h" />
+    <ClInclude Include="Common\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="D3D12Engine.cpp">
+    <ClCompile Include="Core\Camera.cpp" />
+    <ClCompile Include="Gfw\D3D12Engine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="GameFramework.cpp">
+    <ClCompile Include="Gfw\GameFramework.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="GameTimer.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Gfw\GameTimer.cpp" />
+    <ClCompile Include="Core\Mesh.cpp" />
+    <ClCompile Include="Core\GameObject.cpp" />
+    <ClCompile Include="Core\Scene.cpp" />
+    <ClCompile Include="Rendering\Shader.cpp" />
+    <ClCompile Include="Common\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="D3D12Engine.rc" />
+    <ResourceCompile Include="Resources\D3D12Engine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="D3D12Engine.ico" />
-    <Image Include="small.ico" />
+    <Image Include="Resources\D3D12Engine.ico" />
+    <Image Include="Resources\small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders.hlsl">
+    <None Include="Assets\Shaders\Shaders.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -177,6 +180,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
