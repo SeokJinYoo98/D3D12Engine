@@ -134,35 +134,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Core\Camera.h" />
-    <ClInclude Include="Gfw\D3D12Engine.h" />
+    <ClInclude Include="Gfw\Camera.h" />
+    <ClInclude Include="Core\D3D12DeviceManager.h" />
+    <ClInclude Include="D3DApp.h" />
     <ClInclude Include="Gfw\GameFramework.h" />
     <ClInclude Include="Gfw\GameTimer.h" />
-    <ClInclude Include="Core\Mesh.h" />
-    <ClInclude Include="Core\GameObject.h" />
-    <ClInclude Include="Core\Scene.h" />
+    <ClInclude Include="Gfw\Mesh.h" />
+    <ClInclude Include="Gfw\GameObject.h" />
+    <ClInclude Include="Gfw\Scene.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Common\pch.h" />
     <ClInclude Include="Resources\Resource.h" />
     <ClInclude Include="Common\targetver.h" />
+    <ClInclude Include="Gfw\SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Camera.cpp" />
-    <ClCompile Include="Gfw\D3D12Engine.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="Gfw\Camera.cpp" />
+    <ClCompile Include="Core\D3D12DeviceManager.cpp" />
+    <ClCompile Include="D3DApp.cpp" />
     <ClCompile Include="Gfw\GameFramework.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Gfw\GameTimer.cpp" />
-    <ClCompile Include="Core\Mesh.cpp" />
-    <ClCompile Include="Core\GameObject.cpp" />
-    <ClCompile Include="Core\Scene.cpp" />
+    <ClCompile Include="Gfw\Mesh.cpp" />
+    <ClCompile Include="Gfw\GameObject.cpp" />
+    <ClCompile Include="Gfw\Scene.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Common\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Gfw\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\D3D12Engine.rc" />
@@ -180,9 +182,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

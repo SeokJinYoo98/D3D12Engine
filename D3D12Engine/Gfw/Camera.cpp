@@ -1,5 +1,5 @@
 #include "Common\pch.h"
-#include "Core\Camera.h"
+#include "Gfw\Camera.h"
 
 CCamera::CCamera()
 	: m_xmf4x4View{ Matrix4x4::Identity() }, m_xmf4x4Projection{ Matrix4x4::Identity() },
@@ -41,6 +41,10 @@ void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlane
 	m_xmf4x4Projection = Matrix4x4::PerspectiveFovLH(DirectX::XMConvertToRadians(fFovAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance);
 }
 
+void CCamera::OnResize(const RECT& rcClient)
+{
+}
+
 void CCamera::GenerateViewMatrix(DirectX::XMFLOAT3 xmf3Position, DirectX::XMFLOAT3 xmf3LookAt, DirectX::XMFLOAT3 xmf3Up)
 {
 	m_xmf4x4View = Matrix4x4::LookAtLH(xmf3Position, xmf3LookAt, xmf3Up);
@@ -57,12 +61,10 @@ void CCamera::ReleaseShaderVariables()
 
 void CCamera::UpdateShaderVariables(ID3D12GraphicsCommandList* pCommandList)
 {
-	DirectX::XMFLOAT4X4 xmf4x4View;
-	XMStoreFloat4x4(&xmf4x4View, DirectX::XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4View)));
-	// 루트 파리미터 인덱스 1
-	pCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4View, 0);
+	VS_CB_CAMERA_INFO CBCameraInfo;
 
-	DirectX::XMFLOAT4X4 xmf4x4Projection;
-	XMStoreFloat4x4(&xmf4x4Projection, DirectX::XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4Projection)));
-	pCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4Projection, 16);
+	XMStoreFloat4x4(&CBCameraInfo.m_xmf4x4View, DirectX::XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4View)));
+	XMStoreFloat4x4(&CBCameraInfo.m_xmf4x4Projection, DirectX::XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4Projection)));
+
+	pCommandList->SetGraphicsRoot32BitConstants(1, sizeof(VS_CB_CAMERA_INFO) / 4, &CBCameraInfo, 0);
 }

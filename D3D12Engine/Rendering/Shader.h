@@ -1,5 +1,5 @@
 #pragma once
-#include "Core\Camera.h"
+#include "Gfw\Camera.h"
 
 struct CB_GAMEOBJECT_INFO
 {

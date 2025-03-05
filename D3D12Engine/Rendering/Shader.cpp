@@ -163,9 +163,9 @@ void CShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pCommandList)
 
 void CShader::UpdateShaderVariable(ID3D12GraphicsCommandList* pCommandList, const DirectX::XMFLOAT4X4& xmf4x4World)
 {
-	DirectX::XMFLOAT4X4 xmf4x4World_;
-	XMStoreFloat4x4(&xmf4x4World_, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&xmf4x4World)));
-	pCommandList->SetGraphicsRoot32BitConstants(0, 16, &xmf4x4World_, 0);
+	CB_GAMEOBJECT_INFO CBGameObjectInfo;
+	XMStoreFloat4x4(&CBGameObjectInfo.m_xmf4x4World, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&xmf4x4World)));
+	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(CB_GAMEOBJECT_INFO) / 4, &CBGameObjectInfo.m_xmf4x4World, 0);
 }
 
 void CShader::ReleaseShaderVariables()

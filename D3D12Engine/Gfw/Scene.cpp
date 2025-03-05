@@ -1,8 +1,18 @@
 #include "Common\pch.h"
-#include "Core\Scene.h"
+#include "Scene.h"
 
 CScene::~CScene()
 {
+}
+
+bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	return false;
+}
+
+bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	return false;
 }
 
 void CScene::BuildObjects(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
@@ -53,6 +63,10 @@ void CScene::Render(ID3D12GraphicsCommandList* pCommandList, CCamera* camera)
 	for (auto& pObject : m_pGameObjects) {
 		if (pObject) pObject->Render(pCommandList, camera);
 	}
+}
+
+void CScene::OnResize(int nWidth, int nHeight)
+{
 }
 
 void CScene::CreateGraphicsRootSignature(ID3D12Device* pDevice)

@@ -19,6 +19,8 @@ CGameTimer::CGameTimer()
 	m_nSampleCount = 0;
 	m_nCurrentFrameRate = 0;
 	m_nFramesPerSecond = 0;
+	m_nPauseTime = 0;
+
 	m_fFPSTimeElapsed = 0.0f;
 
 	m_bStopped = true;
@@ -32,10 +34,39 @@ CGameTimer::~CGameTimer()
 
 void CGameTimer::Start()
 {
+	// 타이머가 일시정지 상태일 때만 재개
+	if (m_bStopped)
+	{
+		__int64 nStartTime = 0;
+		if (m_bHardwareHasPerformanceCounter)
+		{
+			::QueryPerformanceCounter((LARGE_INTEGER*)&nStartTime);
+		}
+		else
+		{
+			nStartTime = ::timeGetTime();
+		}
+		// 일시정지 동안 경과한 시간을 보정해, 이후 Tick() 계산에 포함되지 않도록 함.
+		m_nLastTime += (nStartTime - m_nPauseTime);
+		m_bStopped = false;
+	}
 }
 
 void CGameTimer::Stop()
 {
+	// 타이머가 이미 일시정지 상태가 아니라면
+	if (!m_bStopped)
+	{
+		if (m_bHardwareHasPerformanceCounter)
+		{
+			::QueryPerformanceCounter((LARGE_INTEGER*)&m_nPauseTime);
+		}
+		else
+		{
+			m_nPauseTime = ::timeGetTime();
+		}
+		m_bStopped = true;
+	}
 }
 
 void CGameTimer::Reset()

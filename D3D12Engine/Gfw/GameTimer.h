@@ -23,6 +23,7 @@ private:
 	__int64 m_nCurrentTime;
 	__int64 m_nLastTime;
 	__int64 m_nPerformanceFrequency;
+	__int64 m_nPauseTime;
 
 	float m_fFrameTime[MAX_SAMPLE_COUNT];
 	ULONG m_nSampleCount;
