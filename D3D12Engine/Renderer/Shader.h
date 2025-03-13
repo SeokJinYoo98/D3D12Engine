@@ -1,5 +1,5 @@
-#pragma once
-#include "Gfw\Camera.h"
+ï»¿#pragma once
+#include "Gfw/Camera/Camera.h"
 
 struct CB_GAMEOBJECT_INFO
 {
@@ -33,7 +33,7 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList* pCommandList, CCamera* camera);
 
 protected:
-	// ÆÄÀÌÇÁ¶óÀÎ »óÅÂ °´Ã¼µéÀÇ 
+	// íŒŒì´í”„ë¼ì¸ ìƒíƒœ ê°ì²´ë“¤ì˜ 
 	ID3D12PipelineState** m_ppPipelineStates;
 	int m_nPipelineStates{ 0 };
 };

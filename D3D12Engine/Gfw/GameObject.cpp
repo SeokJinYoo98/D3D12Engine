@@ -1,6 +1,6 @@
-#include "Common/pch.h"
+ï»¿#include "Common/pch.h"
 #include "GameObject.h"
-#include "Camera.h"
+#include "Gfw/Camera/Camera.h"
 
 CGameObject::CGameObject()
 {
@@ -45,7 +45,7 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pCommandList, CCamera* pCame
 {
 	OnPrepareRender();
 
-	// °ÔÀÓ °´Ã¼ÀÇ ¿ùµå º¯È¯ Çà·ÄÀ» ¼ÎÀÌ´õÀÇ »ó¼ö ¹öÆÛ·Î Àü´ÞÇÑ´Ù.
+	// ê²Œìž„ ê°ì²´ì˜ ì›”ë“œ ë³€í™˜ í–‰ë ¬ì„ ì…°ì´ë”ì˜ ìƒìˆ˜ ë²„í¼ë¡œ ì „ë‹¬í•œë‹¤.
 	if (m_pShader) {
 		m_pShader->UpdateShaderVariable(pCommandList, m_xmf4x4World);
 		m_pShader->Render(pCommandList, pCamera);

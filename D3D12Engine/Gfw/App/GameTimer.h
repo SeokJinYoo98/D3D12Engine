@@ -1,6 +1,6 @@
-#pragma once
+О╩©#pragma once
 
-const ULONG MAX_SAMPLE_COUNT = 50; // 50х╦юг га╥╧юс цЁ╦╝╫ц╟ёю╩ ╢╘юШго©╘ фР╠угя╢ы.
+const ULONG MAX_SAMPLE_COUNT = 50; // 50М ▄Л²≤ М■└К═┬Л·└ Л╡≤К╕╛Л▀°Й╟└Л²└ К┬└Л═│М∙≤Л≈╛ М▐┴Й╥═М∙°К▀╓.
 
 class CGameTimer
 {

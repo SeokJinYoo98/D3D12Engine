@@ -1,4 +1,4 @@
-#include "Common\pch.h"
+ï»¿#include "Common\pch.h"
 #include "Mesh.h"
 
 using namespace DirectX;
@@ -21,15 +21,15 @@ void CMesh::ReleaseUploadBuffers()
 
 void CMesh::Render(ID3D12GraphicsCommandList* pCommandList)
 {
-	// ¸Þ½ÃÀÇ ÇÁ¸®¹ÌÆ¼ºê À¯ÇüÀ» ¼³Á¤
+	// ë©”ì‹œì˜ í”„ë¦¬ë¯¸í‹°ë¸Œ ìœ í˜•ì„ ì„¤ì •
 	pCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
-	// ¸Þ½ÃÀÇ Á¤Á¡ ¹öÆÛ ºä¸¦ ¼³Á¤
+	// ë©”ì‹œì˜ ì •ì  ë²„í¼ ë·°ë¥¼ ì„¤ì •
 	pCommandList->IASetVertexBuffers(m_nSlot, 1, &m_d3dVertexBufferView);
-	// ¸Þ½ÃÀÇ ÀÎµ¦½º ¹öÆì ºä¸¦ ¼³Á¤ÇÑ´Ù.
+	// ë©”ì‹œì˜ ì¸ë±ìŠ¤ ë²„íŽ´ ë·°ë¥¼ ì„¤ì •í•œë‹¤.
 	pCommandList->IASetIndexBuffer(&m_d3dIndexBufferView);
-	// ¸Þ½ÃÀÇ Á¤Á¡ ¹öÆÛ ºä¸¦ ·»´õ¸µÇÑ´Ù(ÆÄÀÌÇÁ¶óÀÎ(ÀÔ·ÂÁ¶¸³±â)À» ÀÛµ¿ÇÏ°Ô ÇÑ´Ù.
+	// ë©”ì‹œì˜ ì •ì  ë²„í¼ ë·°ë¥¼ ë Œë”ë§í•œë‹¤(íŒŒì´í”„ë¼ì¸(ìž…ë ¥ì¡°ë¦½ê¸°)ì„ ìž‘ë™í•˜ê²Œ í•œë‹¤.
 	//pCommandList->DrawInstanced(m_nVertices, 1, m_nOffset, 0);
-	// ÀÎµ¦½º¸¦ »ç¿ëÇØ¼­ ±âº» µµÇüÀ» ±×¸®·Á¸é DrawIndexedInstanced¸¦ »ç¿ë
+	// ì¸ë±ìŠ¤ë¥¼ ì‚¬ìš©í•´ì„œ ê¸°ë³¸ ë„í˜•ì„ ê·¸ë¦¬ë ¤ë©´ DrawIndexedInstancedë¥¼ ì‚¬ìš©
 	pCommandList->DrawIndexedInstanced(m_nIndices, 1, 0, 0, 0);
 }
 
@@ -42,19 +42,19 @@ CTriangleMesh::CTriangleMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* p
 
 void CTriangleMesh::CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
 {
-	// »ï°¢Çü ¸Þ½¬¸¦ ¼³Á¤
+	// ì‚¼ê°í˜• ë©”ì‰¬ë¥¼ ì„¤ì •
 	m_nVertices = 3;
 	m_nStride = sizeof(CDiffusedVertex);
 	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	// Á¤Á¡ÀÇ »ö»óÀº ½Ã°è¹æÇâ ¼ø¼­´ë·Î »¡ ³ì ÆÄ·ÎÁöÁ¤ÇÑ´Ù.
-	// °¢ ÆÄ¶ó¹ÌÅÍ´Â 0.0 ~ 1.0 »çÀÌÀÇ ½Ç¼ö °ª
+	// ì •ì ì˜ ìƒ‰ìƒì€ ì‹œê³„ë°©í–¥ ìˆœì„œëŒ€ë¡œ ë¹¨ ë…¹ íŒŒë¡œì§€ì •í•œë‹¤.
+	// ê° íŒŒë¼ë¯¸í„°ëŠ” 0.0 ~ 1.0 ì‚¬ì´ì˜ ì‹¤ìˆ˜ ê°’
 	CDiffusedVertex pVertices[3];
 	pVertices[0] = CDiffusedVertex(Direction::UP, XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
 	pVertices[1] = CDiffusedVertex(Direction::RIGTH, XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
 	pVertices[2] = CDiffusedVertex(Direction::LEFT, XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f));
 
-	// »ï°¢Çü ¸Þ½¬¸¦ ¸®¼Ò½º·Î »ý¼º
+	// ì‚¼ê°í˜• ë©”ì‰¬ë¥¼ ë¦¬ì†ŒìŠ¤ë¡œ ìƒì„±
 	m_pVertexBuffer = ResourceHelper::CreateBufferResource(
 		pDevice,
 		pCommandList,
@@ -65,7 +65,7 @@ void CTriangleMesh::CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsComm
 		&m_pVertexUploadBuffer
 	);
 
-	// Á¤Á¡ ¹öÆÛ ºä¸¦ »ý¼º
+	// ì •ì  ë²„í¼ ë·°ë¥¼ ìƒì„±
 	m_d3dVertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
 	m_d3dVertexBufferView.StrideInBytes = m_nStride;
 	m_d3dVertexBufferView.SizeInBytes = m_nStride * m_nVertices;
@@ -112,14 +112,14 @@ void CCubeMesh::CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandL
 
 	auto& rd = Random::GetInstance();
 	CDiffusedVertex pVertices[8] = {
-		CDiffusedVertex(XMFLOAT3(-0.5f, +0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 0: ÁÂ»ó¾Õ (»¡°­)
-		CDiffusedVertex(XMFLOAT3(+0.5f, +0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 1: ¿ì»ó¾Õ (ÃÊ·Ï)
-		CDiffusedVertex(XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 2: ÁÂÇÏ¾Õ (ÆÄ¶û)
-		CDiffusedVertex(XMFLOAT3(+0.5f, -0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 3: ¿ìÇÏ¾Õ (³ë¶û)
-		CDiffusedVertex(XMFLOAT3(-0.5f, +0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 4: ÁÂ»óµÚ (ÀÚÈ«)
-		CDiffusedVertex(XMFLOAT3(+0.5f, +0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 5: ¿ì»óµÚ (Ã»·Ï)
-		CDiffusedVertex(XMFLOAT3(-0.5f, -0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 6: ÁÂÇÏµÚ (Èò»ö)
-		CDiffusedVertex(XMFLOAT3(+0.5f, -0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 7: ¿ìÇÏµÚ (°ËÁ¤)
+		CDiffusedVertex(XMFLOAT3(-0.5f, +0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 0: ì¢Œìƒì•ž (ë¹¨ê°•)
+		CDiffusedVertex(XMFLOAT3(+0.5f, +0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 1: ìš°ìƒì•ž (ì´ˆë¡)
+		CDiffusedVertex(XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 2: ì¢Œí•˜ì•ž (íŒŒëž‘)
+		CDiffusedVertex(XMFLOAT3(+0.5f, -0.5f, -0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 3: ìš°í•˜ì•ž (ë…¸ëž‘)
+		CDiffusedVertex(XMFLOAT3(-0.5f, +0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 4: ì¢Œìƒë’¤ (ìží™)
+		CDiffusedVertex(XMFLOAT3(+0.5f, +0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 5: ìš°ìƒë’¤ (ì²­ë¡)
+		CDiffusedVertex(XMFLOAT3(-0.5f, -0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 6: ì¢Œí•˜ë’¤ (í°ìƒ‰)
+		CDiffusedVertex(XMFLOAT3(+0.5f, -0.5f, +0.5f), XMFLOAT4(rd.GetRandomFloat(), rd.GetRandomFloat(), rd.GetRandomFloat(), 1.0f)), // 7: ìš°í•˜ë’¤ (ê²€ì •)
 	};
 
 	 auto pRawBuffer = ResourceHelper::CreateBufferResource(
@@ -133,7 +133,7 @@ void CCubeMesh::CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandL
 	);
 	 m_pVertexBuffer.Attach(pRawBuffer);
 
-	 // Á¤Á¡ ¹öÆÛ ºä¸¦ »ý¼º
+	 // ì •ì  ë²„í¼ ë·°ë¥¼ ìƒì„±
 	 m_d3dVertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
 	 m_d3dVertexBufferView.StrideInBytes = m_nStride;
 	 m_d3dVertexBufferView.SizeInBytes = m_nStride * m_nVertices;

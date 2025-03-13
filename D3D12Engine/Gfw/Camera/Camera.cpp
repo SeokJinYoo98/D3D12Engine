@@ -1,4 +1,4 @@
-#include "Common\pch.h"
+﻿#include "Common\pch.h"
 #include "Gfw\Camera.h"
 
 CCamera::CCamera()

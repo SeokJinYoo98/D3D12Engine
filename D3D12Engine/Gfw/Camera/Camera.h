@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define ASPECT_RATIO (float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT))
 

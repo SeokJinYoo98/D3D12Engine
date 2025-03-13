@@ -1,4 +1,4 @@
-#include "Common\pch.h"
+ï»¿#include "Common\pch.h"
 #include "Shader.h"
 
 CShader::CShader()
@@ -17,7 +17,7 @@ CShader::~CShader()
 	}
 }
 
-// ·¡½ºÅÍ¶óÀÌÀú »óÅÂ¸¦ ¼³Á¤ÇÏ±â À§ÇÑ ±¸Á¶Ã¼¸¦ ¹İÈ¯
+// ë˜ìŠ¤í„°ë¼ì´ì € ìƒíƒœë¥¼ ì„¤ì •í•˜ê¸° ìœ„í•œ êµ¬ì¡°ì²´ë¥¼ ë°˜í™˜
 D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc{ };
@@ -36,7 +36,7 @@ D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
 	return d3dRasterizerDesc;
 }
 
-// Depth-Stencil °Ë»ç¸¦ À§ÇÑ »óÅÂ¸¦ ¼³Á¤ÇÏ±â À§ÇÑ ±¸Á¶Ã¼
+// Depth-Stencil ê²€ì‚¬ë¥¼ ìœ„í•œ ìƒíƒœë¥¼ ì„¤ì •í•˜ê¸° ìœ„í•œ êµ¬ì¡°ì²´
 D3D12_DEPTH_STENCIL_DESC CShader::CreateDepthStencilState()
 {
 	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc{ };
@@ -77,7 +77,7 @@ D3D12_BLEND_DESC CShader::CreateBlendState()
 	return d3dBlendDesc;
 }
 
-// ÀÔ·Â Á¶¸³±â¿¡¼­ Á¤Á¡ ¹öÆÛÀÇ ±¸Á¶¸¦ ¾Ë·ÁÁÖ±â À§ÇÑ ±¸Á¶Ã¼¸¦ ¹İÈ¯.
+// ì…ë ¥ ì¡°ë¦½ê¸°ì—ì„œ ì •ì  ë²„í¼ì˜ êµ¬ì¡°ë¥¼ ì•Œë ¤ì£¼ê¸° ìœ„í•œ êµ¬ì¡°ì²´ë¥¼ ë°˜í™˜.
 D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
 {
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc{ };
@@ -87,7 +87,7 @@ D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
 	return d3dInputLayoutDesc;
 }
 
-// Á¤Á¡ ¼ÎÀÌ´õ ¹ÙÀÌÆ® ÄÚµå¸¦ »ı¼ºÇÑ´Ù.
+// ì •ì  ì…°ì´ë” ë°”ì´íŠ¸ ì½”ë“œë¥¼ ìƒì„±í•œë‹¤.
 D3D12_SHADER_BYTECODE CShader::CreateVertexShader(ID3DBlob** ppShaderBlob)
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode{ };
@@ -95,7 +95,7 @@ D3D12_SHADER_BYTECODE CShader::CreateVertexShader(ID3DBlob** ppShaderBlob)
 	d3dShaderByteCode.pShaderBytecode = nullptr;
 	return d3dShaderByteCode;
 }
-// ÇÈ¼¿ ¼ÎÀÌ´õ ¹ÙÀÌÆ® ÄÚµå¸¦ »ı¼ºÇÑ´Ù.
+// í”½ì…€ ì…°ì´ë” ë°”ì´íŠ¸ ì½”ë“œë¥¼ ìƒì„±í•œë‹¤.
 D3D12_SHADER_BYTECODE CShader::CreatePixelShader(ID3DBlob** ppShaderBlob)
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode{ };
@@ -103,7 +103,7 @@ D3D12_SHADER_BYTECODE CShader::CreatePixelShader(ID3DBlob** ppShaderBlob)
 	d3dShaderByteCode.pShaderBytecode = nullptr;
 	return d3dShaderByteCode;
 }
-// ¼ÎÀÌ´õ ¼Ò½º ÄÚµå¸¦ ÄÄÆÄÀÏÇÏ¿© ¹ÙÀÌÆ® ÄÚµå ±¸Á¶Ã¼¸¦ ¹İÈ¯ÇÑ´Ù.
+// ì…°ì´ë” ì†ŒìŠ¤ ì½”ë“œë¥¼ ì»´íŒŒì¼í•˜ì—¬ ë°”ì´íŠ¸ ì½”ë“œ êµ¬ì¡°ì²´ë¥¼ ë°˜í™˜í•œë‹¤.
 D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob** ppShaderBlob)
 {
 	UINT nComPileFlags{ };
@@ -124,7 +124,7 @@ D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(const WCHAR* pszFileName, L
 	return d3dShaderByteCode;
 }
 
-// ±×·¡ÇÈ½º ÆÄÀÌÇÁ¶óÀÎ »óÅÂ °´Ã¼¸¦ »ı¼ºÇÑ´Ù.
+// ê·¸ë˜í”½ìŠ¤ íŒŒì´í”„ë¼ì¸ ìƒíƒœ ê°ì²´ë¥¼ ìƒì„±í•œë‹¤.
 void CShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pRootSignature)
 {
 	ID3DBlob* pd3dVertexShaderBlob = nullptr, *pd3dPixelShaderBlob = nullptr;

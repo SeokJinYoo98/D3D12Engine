@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class CVertex {
 public:
 	CVertex() 
@@ -29,7 +29,7 @@ public:
 	~CDiffusedVertex() { }
 
 protected:
-	// Á¤Á¡ÀÇ »ö
+	// ì •ì ì˜ ìƒ‰
 	DirectX::XMFLOAT4 m_xmf4Diffuse;
 };
 

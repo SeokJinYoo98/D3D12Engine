@@ -1,136 +1,75 @@
-#include "Common\pch.h"
+ï»¿#include "Common\pch.h"
 #include "GameFramework.h"
 
 
 CGameFramework::CGameFramework()
-	: m_deviceManager{ }, m_gameTimer{ }, m_pszFrameRate{ }
 {
-	_tcscpy_s(m_pszFrameRate, _T("YEngine ("));
 }
 
-bool CGameFramework::Initialize(HINSTANCE hInstance, HWND hMainWnd)
+void CGameFramework::InitGame(HINSTANCE hInstance, int nCmdShow, UINT nWidth, UINT nHeight)
 {
-	RECT rcClient; ::GetClientRect(hMainWnd, &rcClient);
-	m_nWidth = rcClient.right - rcClient.left;
-	m_nHeight = rcClient.bottom - rcClient.top;
-
-	m_deviceManager.Initialize(hMainWnd, m_nWidth, m_nHeight);
-
-	BuildObjects();
-
-	return true;
+	CD3DApp::InitWindow(hInstance, nCmdShow, nWidth, nHeight);
+	BuildRenderer();
+	BuildScene();
+	m_gameTimer.Reset();
 }
 
-void CGameFramework::FrameAdvance(HWND hWnd)
+void CGameFramework::OnResize()
 {
-	m_gameTimer.Tick(0.0f);
-
-	ProcessInput();
-	AnimateObjects();
-
-	m_deviceManager.ResetCommandListAndAllocator();
-	auto d3dResourceBarrier = m_deviceManager.TransitionResourceFromPresentToRenderTarget();
-	m_deviceManager.ClearRenderTargetAndDepthStencil(DirectX::Colors::Azure);
-	
-	Render();
-
-	m_deviceManager.TransitionRenderTargetToPresent(d3dResourceBarrier);
-	m_deviceManager.ExcuteCommandList();
-
-	m_deviceManager.WaitForGpuComplete();
-
-	m_deviceManager.m_pSwapChain->Present(0, 0);
-
-	m_deviceManager.MoveToNextFrame();
-
-	m_gameTimer.GetFrameRate(m_pszFrameRate + 9, 40);
-	::SetWindowText(hWnd, m_pszFrameRate);
-}
-
-bool CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
-{
-	return false;
-}
-
-bool CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
-{
-	return false;
-}
-
-void CGameFramework::PauseGame()
-{
-	if (m_bPauseGame) return;
-
-	m_bPauseGame = true;
-	m_gameTimer.Stop();
-}
-
-void CGameFramework::StartGame()
-{
-	if (!m_bPauseGame) return;
-
-	m_bPauseGame = false;
-	m_gameTimer.Start();
-}
-
-void CGameFramework::OnResize(HWND hWnd)
-{
-	RECT rcClient; ::GetClientRect(hWnd, &rcClient);
-	m_nWidth = rcClient.right - rcClient.left;
-	m_nHeight = rcClient.bottom - rcClient.top;
-
-	m_deviceManager.OnResize();
-	m_pScene->OnResize(m_nWidth, m_nHeight);
+	CD3DApp::OnResize();
+	if (m_pGameRenderer)
+		m_pGameRenderer->OnResize(m_hWnd, m_nClientWidth, m_nClientHeight);
+	if (m_pGameScene)
+		m_pGameScene->OnResize(m_nClientWidth, m_nClientHeight);
 }
 
 void CGameFramework::OnDestroy()
 {
-	m_deviceManager.WaitForGpuComplete();
-	m_deviceManager.OnDestroy();
-}
-
-void CGameFramework::Render()
-{
-	if (m_pScene) 
-		m_pScene->Render(m_deviceManager.m_pCommandList.Get(), m_pCamera.get());
+	m_pGameRenderer->OnDestroy();
+	CD3DApp::OnDestroy();
+	m_pGameScene->OnDestroy();
 }
 
 void CGameFramework::ProcessInput()
 {
 }
 
-void CGameFramework::AnimateObjects()
+void CGameFramework::Update(float fElapsedTime)
 {
-	if (m_pScene) m_pScene->AnimateObjects(m_gameTimer.GetTimeElapsed());
+	if (m_pGameScene)
+		m_pGameScene->Update(fElapsedTime);
 }
 
-void CGameFramework::BuildObjects()
+void CGameFramework::Render(float fElapsedTime)
 {
-	auto& pCommandList = m_deviceManager.m_pCommandList;
+	m_pGameRenderer->BeginRendering(DirectX::Colors::AliceBlue);
 
-	pCommandList->Reset(m_deviceManager.m_pCommandAllocator.Get(), nullptr);
+	if (m_pGameScene)
+		m_pGameScene->Render(m_pGameRenderer->GetCommandList());
 
-	// Ä«¸Ş¶ó °´Ã¼¸¦ »ı¼ºÇÏ°í, ºäÆ÷Æ®, ¾¾Àú, Åõ¿µ-ºä º¯È¯ Çà·ÄÀ» »ı¼ºÇÏ°í ¼³Á¤
-	m_pCamera = std::make_unique<CCamera>();
-	m_pCamera->SetViewport(0, 0, m_nWidth, m_nHeight, 0.0f, 1.0f);
-	m_pCamera->SetScissorRect(0, 0, m_nWidth, m_nHeight);
-	m_pCamera->GenerateProjectionMatrix(1.0f, 500.f, float(m_nWidth) / float(m_nHeight), 90.f);
-	m_pCamera->GenerateViewMatrix(DirectX::XMFLOAT3(0.0f, 0.0f, -2.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+	m_pGameRenderer->EndRendering();
+}
 
-	// ¾À °´Ã¼¸¦ »ı¼ºÇÏ°í ¾À¿¡ Æ÷ÇÔµÉ °ÔÀÓ °´Ã¼µéÀ» »ı¼º
-	m_pScene = std::make_unique<CScene>();
-	m_pScene->BuildObjects(m_deviceManager.m_pD3dDevice.Get(), m_deviceManager.m_pCommandList.Get());
+void CGameFramework::BuildScene()
+{
+	m_pGameRenderer->ResetCommandList();
 
-	// ¾À °´Ã¼¸¦ »ı¼ºÇÏ±â À§ÇÏ¿© ÇÊ¿äÇÑ ±×·¡ÇÈ ¸í·É ¸®½ºÆ®µéÀ» ¸í·É Å¥¿¡ Ãß°¡ÇÑ´Ù.
-	pCommandList->Close();
-	ID3D12CommandList* ppd3dCommandLists[] = { pCommandList.Get()};
-	m_deviceManager.m_pCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+	// ì”¬ ê°ì²´ë¥¼ ìƒì„±í•˜ê³  ì”¬ì— í¬í•¨ë  ê²Œì„ ê°ì²´ë“¤ì„ ìƒì„±
+	m_pGameScene = std::make_unique<CGameScene>();
+	m_pGameScene->InitScene(m_pGameRenderer->GetDevice(), m_pGameRenderer->GetCommandList(), m_nClientWidth, m_nClientHeight);
 
-	// ±×·¡ÇÈ ¸í·É ¸®½ºÆ®µéÀÌ ¸ğµÎ ½ÇÇàµÉ ¶§ ±îÁö ±â´Ù¸°´Ù.
-	m_deviceManager.WaitForGpuComplete();
+	// ì”¬ ê°ì²´ë¥¼ ìƒì„±í•˜ê¸° ìœ„í•˜ì—¬ í•„ìš”í•œ ê·¸ë˜í”½ ëª…ë ¹ ë¦¬ìŠ¤íŠ¸ë“¤ì„ ëª…ë ¹ íì— ì¶”ê°€í•œë‹¤.
+	m_pGameRenderer->ExcuteCommandList();
 
-	// ±×·¡ÇÈ ¸®¼Ò½ºµéÀ» »ı¼ºÇÏ´Â °úÁ¤¿¡ »ı¼ºµÈ ¾÷·Îµå ¹öÆÛµéÀ» ¼Ò¸ê½ÃÅ²´Ù.
-	if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	// ê·¸ë˜í”½ ëª…ë ¹ ë¦¬ìŠ¤íŠ¸ë“¤ì´ ëª¨ë‘ ì‹¤í–‰ë  ë•Œ ê¹Œì§€ ê¸°ë‹¤ë¦°ë‹¤.
+	m_pGameRenderer->WaitForGpuComplete();
 
-	m_gameTimer.Reset();
+	// ê·¸ë˜í”½ ë¦¬ì†ŒìŠ¤ë“¤ì„ ìƒì„±í•˜ëŠ” ê³¼ì •ì— ìƒì„±ëœ ì—…ë¡œë“œ ë²„í¼ë“¤ì„ ì†Œë©¸ì‹œí‚¨ë‹¤.
+	if (m_pGameScene) m_pGameScene->ReleaseUploadBuffers();
+}
+
+void CGameFramework::BuildRenderer()
+{
+	m_pGameRenderer = std::make_unique<CRenderer>();
+	m_pGameRenderer->InitRenderer(m_hWnd, m_nClientWidth, m_nClientHeight);
 }

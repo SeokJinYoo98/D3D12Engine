@@ -30,10 +30,10 @@
     <ClInclude Include="Gfw\GameFramework.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\Scene.h">
+    <ClInclude Include="Gfw\GameScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\GameTimer.h">
+    <ClInclude Include="Gfw\App\GameTimer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Gfw\Mesh.h">
@@ -42,19 +42,28 @@
     <ClInclude Include="Gfw\GameObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Rendering\Shader.h">
+    <ClInclude Include="Gfw\Camera\Camera.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\Camera.h">
+    <ClInclude Include="Gfw\App\D3DApp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="D3DApp.h">
+    <ClInclude Include="Renderer\Renderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Core\D3D12DeviceManager.h">
+    <ClInclude Include="Renderer\D3D12Device\D3D12Device.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\SceneManager.h">
+    <ClInclude Include="Renderer\Shader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\ResourceManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GameShader\GameShader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\RootSignature\RootSignature.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,10 +74,10 @@
     <ClCompile Include="Gfw\GameFramework.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\Scene.cpp">
+    <ClCompile Include="Gfw\GameScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\GameTimer.cpp">
+    <ClCompile Include="Gfw\App\GameTimer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Gfw\Mesh.cpp">
@@ -77,19 +86,31 @@
     <ClCompile Include="Gfw\GameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\Shader.cpp">
+    <ClCompile Include="Gfw\Camera\Camera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\Camera.cpp">
+    <ClCompile Include="Gfw\App\D3DApp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="D3DApp.cpp">
+    <ClCompile Include="Renderer\Renderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Core\D3D12DeviceManager.cpp">
+    <ClCompile Include="Renderer\D3D12Device\D3D12Device.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\SceneManager.cpp">
+    <ClCompile Include="Renderer\Shader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\ResourceManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="entry.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\GameShader\GameShader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RootSignature\RootSignature.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,55 +1,31 @@
-#pragma once
-#include "Core\D3D12DeviceManager.h"
-#include "GameTimer.h"
-#include "Scene.h"
-#include "Camera.h"
+Ôªø#pragma once
+#include "Gfw/App/D3DApp.h"
+#include "Renderer/Renderer.h"
+#include "GameScene.h"
 
-class CGameFramework
-{
+class CGameFramework : public CD3DApp {
 public:
 	CGameFramework();
-
-
+	CGameFramework(const CGameFramework& rhs) = delete;
+	CGameFramework& operator=(const CGameFramework& rhs) = delete;
+	~CGameFramework() { }
 public:
-	// ø‹∫Œ »£√‚
-	bool Initialize(HINSTANCE hInstance, HWND hMainWnd);
-	void OnDestroy();
-
-	void FrameAdvance(HWND hWnd);
-	
-	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-
-	void PauseGame();
-	void StartGame();
-
-	void OnResize(HWND hWnd);
+	virtual void InitGame(HINSTANCE hInstance, int nCmdShow, UINT nWidth = 800, UINT nHeight = 600);
 
 private:
-	// ∞‘¿” ∞¸∑√
-	void ProcessInput();
-	void AnimateObjects();
-	void Render();
-
-	void BuildObjects();
+	void OnResize() override;
+	void OnDestroy() override;
 
 private:
+	void ProcessInput() override;
+	void Update(float fElapsedTime) override;
+	void Render(float fElapsedTime) override;
+
+	virtual void BuildScene();
+	virtual void BuildRenderer();
 
 private:
-	CD3D12DeviceManager	m_deviceManager;
-
-	std::unique_ptr<CScene>		m_pScene;
-	std::unique_ptr<CCamera>	m_pCamera;
-
-	CGameTimer			m_gameTimer;
-	_TCHAR				m_pszFrameRate[50];
-
-private:
-	bool m_bPauseGame{ false };
-
-	UINT m_nWidth{ 0 };
-	UINT m_nHeight{ 0 };
-
-	POINT m_nLastMousePos;
+	std::unique_ptr<CGameScene>		m_pGameScene;
+	std::unique_ptr<CRenderer>		m_pGameRenderer;
 };
 

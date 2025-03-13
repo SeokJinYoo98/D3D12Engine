@@ -1,6 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "Mesh.h"
-#include "Rendering/Shader.h"
+#include "Renderer/Shader.h"
 
 class CGameObject 
 {
