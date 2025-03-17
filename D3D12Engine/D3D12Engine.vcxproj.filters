@@ -54,16 +54,19 @@
     <ClInclude Include="Renderer\D3D12Device\D3D12Device.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Shader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\ResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\GameShader\GameShader.h">
+    <ClInclude Include="Renderer\RootSignature\RootSignature.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\RootSignature\RootSignature.h">
+    <ClInclude Include="Gfw\Component\Component.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Shader\Shader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\UploadBuffer\UploadBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,19 +101,22 @@
     <ClCompile Include="Renderer\D3D12Device\D3D12Device.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Shader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\ResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="entry.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\GameShader\GameShader.cpp">
+    <ClCompile Include="Renderer\RootSignature\RootSignature.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\RootSignature\RootSignature.cpp">
+    <ClCompile Include="Gfw\Component\Component.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Shader\Shader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\UploadBuffer\UploadBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,8 +134,9 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\Shaders.hlsl">
+    <FxCompile Include="Assets\Shaders\Shaders.hlsl">
       <Filter>셰이더 파일</Filter>
-    </None>
+    </FxCompile>
+    <FxCompile Include="assets\Shaders\shader.hlsl" />
   </ItemGroup>
 </Project>

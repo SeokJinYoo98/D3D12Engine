@@ -17,6 +17,12 @@ void CGameObject::Rotate(const DirectX::XMFLOAT3& xmf3Axis, float fAngle)
 	m_xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_xmf4x4World);
 }
 
+void CGameObject::Move(const DirectX::XMFLOAT3& xmf3Pos)
+{
+	DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(xmf3Pos.x, xmf3Pos.y, xmf3Pos.z);
+	XMStoreFloat4x4(&m_xmf4x4World, translation);
+}
+
 void CGameObject::ReleaseUploadBuffers()
 {
 	if (m_pMesh) 
@@ -33,7 +39,7 @@ void CGameObject::SetShader(std::shared_ptr<CShader> pShader)
 	m_pShader = std::move(pShader);
 }
 
-void CGameObject::Animate(float fTimeElpased)
+void CGameObject::Update(float fTimeElpased)
 {
 }
 
@@ -47,8 +53,7 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pCommandList, CCamera* pCame
 
 	// 게임 객체의 월드 변환 행렬을 셰이더의 상수 버퍼로 전달한다.
 	if (m_pShader) {
-		m_pShader->UpdateShaderVariable(pCommandList, m_xmf4x4World);
-		m_pShader->Render(pCommandList, pCamera);
+		m_pShader->Render(pCommandList, "Default", CbIndex);
 	}
 
 	if (m_pMesh) m_pMesh->Render(pCommandList);
@@ -63,7 +68,9 @@ CRotatingObject::~CRotatingObject()
 {
 }
 
-void CRotatingObject::Animate(float fTimeElapsed)
+void CRotatingObject::Update(float fTimeElapsed)
 {
 	CGameObject::Rotate(m_xmf3RotationAxis, m_fRotationSpeed * fTimeElapsed);
+	CB_Object myCb(m_xmf4x4World);
+	m_pShader->UpdateObjectConstant(myCb, CbIndex);
 }

@@ -1,5 +1,5 @@
 ﻿#include "Common\pch.h"
-#include "Gfw\Camera.h"
+#include "Gfw/Camera/Camera.h"
 
 CCamera::CCamera()
 	: m_xmf4x4View{ Matrix4x4::Identity() }, m_xmf4x4Projection{ Matrix4x4::Identity() },
@@ -36,6 +36,19 @@ void CCamera::SetViewportsAndScissorRects(ID3D12GraphicsCommandList* pCommandLis
 	pCommandList->RSSetScissorRects(1, &m_d3dScissorRect);
 }
 
+void CCamera::Update()
+{
+	CB_Pass CBCameraInfo;
+	CBCameraInfo.m_xmf4x4Projection = m_xmf4x4Projection;
+	CBCameraInfo.m_xmf4x4View = m_xmf4x4View;
+
+	m_pShader->UpdatePassConstant(CBCameraInfo);
+}
+
+void CCamera::Render()
+{
+}
+
 void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFovAngle)
 {
 	m_xmf4x4Projection = Matrix4x4::PerspectiveFovLH(DirectX::XMConvertToRadians(fFovAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance);
@@ -61,10 +74,6 @@ void CCamera::ReleaseShaderVariables()
 
 void CCamera::UpdateShaderVariables(ID3D12GraphicsCommandList* pCommandList)
 {
-	VS_CB_CAMERA_INFO CBCameraInfo;
 
-	XMStoreFloat4x4(&CBCameraInfo.m_xmf4x4View, DirectX::XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4View)));
-	XMStoreFloat4x4(&CBCameraInfo.m_xmf4x4Projection, DirectX::XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4Projection)));
-
-	pCommandList->SetGraphicsRoot32BitConstants(1, sizeof(VS_CB_CAMERA_INFO) / 4, &CBCameraInfo, 0);
+	m_pShader->UpdatePassCB(pCommandList);
 }

@@ -56,7 +56,7 @@ void CGameFramework::BuildScene()
 
 	// 씬 객체를 생성하고 씬에 포함될 게임 객체들을 생성
 	m_pGameScene = std::make_unique<CGameScene>();
-	m_pGameScene->InitScene(m_pGameRenderer->GetDevice(), m_pGameRenderer->GetCommandList(), m_nClientWidth, m_nClientHeight);
+	m_pGameScene->InitScene(m_pGameRenderer->GetDevice(), m_pGameRenderer->GetCommandList(), m_pGameRenderer->GetCbvHeap(), m_nClientWidth, m_nClientHeight);
 
 	// 씬 객체를 생성하기 위하여 필요한 그래픽 명령 리스트들을 명령 큐에 추가한다.
 	m_pGameRenderer->ExcuteCommandList();

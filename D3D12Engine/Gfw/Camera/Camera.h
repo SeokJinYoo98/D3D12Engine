@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "Renderer/Shader/Shader.h"
 #define ASPECT_RATIO (float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT))
 
 struct VS_CB_CAMERA_INFO
@@ -10,13 +10,6 @@ struct VS_CB_CAMERA_INFO
 
 class CCamera
 {
-protected:
-	DirectX::XMFLOAT4X4 m_xmf4x4View;
-	DirectX::XMFLOAT4X4 m_xmf4x4Projection;
-
-	D3D12_VIEWPORT	m_d3dViewport;
-	D3D12_RECT		m_d3dScissorRect;
-
 public:
 	CCamera();
 	virtual ~CCamera();
@@ -33,5 +26,19 @@ public:
 	void SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom);
 
 	virtual void SetViewportsAndScissorRects(ID3D12GraphicsCommandList* pCommandList);
+	virtual void Update();
+	virtual void Render();
+
+public:
+	std::shared_ptr<CShader> m_pShader;
+
+protected:
+	DirectX::XMFLOAT4X4 m_xmf4x4View;
+	DirectX::XMFLOAT4X4 m_xmf4x4Projection;
+
+	D3D12_VIEWPORT	m_d3dViewport;
+	D3D12_RECT		m_d3dScissorRect;
+
+
 };
 

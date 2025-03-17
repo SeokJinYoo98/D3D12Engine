@@ -134,7 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Renderer\GameShader\GameShader.h" />
+    <ClInclude Include="Gfw\Component\Component.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Renderer\D3D12Device\D3D12Device.h" />
     <ClInclude Include="Gfw\Camera\Camera.h" />
@@ -144,16 +144,17 @@
     <ClInclude Include="Gfw\Mesh.h" />
     <ClInclude Include="Gfw\GameObject.h" />
     <ClInclude Include="Gfw\GameScene.h" />
-    <ClInclude Include="Renderer\Shader.h" />
     <ClInclude Include="Common\pch.h" />
     <ClInclude Include="Renderer\ResourceManager.h" />
+    <ClInclude Include="Renderer\Shader\Shader.h" />
     <ClInclude Include="Resources\Resource.h" />
     <ClInclude Include="Common\targetver.h" />
     <ClInclude Include="Renderer\RootSignature\RootSignature.h" />
+    <ClInclude Include="Renderer\UploadBuffer\UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Gfw\Component\Component.cpp" />
     <ClCompile Include="entry.cpp" />
-    <ClCompile Include="Renderer\GameShader\GameShader.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Renderer\D3D12Device\D3D12Device.cpp" />
     <ClCompile Include="Gfw\Camera\Camera.cpp" />
@@ -165,13 +166,14 @@
     <ClCompile Include="Gfw\Mesh.cpp" />
     <ClCompile Include="Gfw\GameObject.cpp" />
     <ClCompile Include="Gfw\GameScene.cpp" />
-    <ClCompile Include="Renderer\Shader.cpp" />
     <ClCompile Include="Common\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Renderer\ResourceManager.cpp" />
     <ClCompile Include="Renderer\RootSignature\RootSignature.cpp" />
+    <ClCompile Include="Renderer\Shader\Shader.cpp" />
+    <ClCompile Include="Renderer\UploadBuffer\UploadBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\D3D12Engine.rc" />
@@ -181,14 +183,27 @@
     <Image Include="Resources\small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\Shaders.hlsl">
+    <FxCompile Include="assets\Shaders\shader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Assets\Shaders\Shaders.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
-    </None>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

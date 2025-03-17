@@ -3,6 +3,10 @@ class CD3D12Device
 {
 public:
 	CD3D12Device();
+
+	ID3D12GraphicsCommandList*	GetCommandList()	const { return m_pCommandList.Get(); }
+	ID3D12Device*				GetDevice()		const { return m_pD3dDevice.Get(); }
+
 	virtual void InitDevice(HWND hWnd, UINT nWidth, UINT nHeight);
 	virtual void OnResize(HWND hWnd, UINT nWidth, UINT nHeight);
 	virtual void OnDestroy();

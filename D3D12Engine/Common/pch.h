@@ -89,6 +89,7 @@ namespace ResourceHelper {
 		D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
 		ID3D12Resource** ppd3dUploadBuffer = nullptr
 	);
+	UINT CalcConstantBufferByteSize(UINT byteSize);
 }
 
 namespace Vector3 {

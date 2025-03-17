@@ -9,7 +9,7 @@ public:
 	virtual void OnDestroy();
 
 public:
-	void InitScene(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, UINT nWidth, UINT nHeight);
+	void InitScene(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, ID3D12DescriptorHeap** pCbvHeap, UINT nWidth, UINT nHeight);
 
 	virtual void ProcessInput(UCHAR* pKeysBuffers);
 	virtual void Update(float fElapsedTime);
@@ -20,7 +20,7 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 protected:
-	virtual void BuildObjects(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
+	virtual void BuildObjects(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, ID3D12DescriptorHeap** pCbvHeap);
 	virtual void BuildCameras(UINT nWidth, UINT nHeight);
 	virtual void CreateGraphicsRootSignature(ID3D12Device* pDevice);
 
