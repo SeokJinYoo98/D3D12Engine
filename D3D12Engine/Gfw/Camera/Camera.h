@@ -29,8 +29,12 @@ public:
 	virtual void Update();
 	virtual void Render();
 
+	const D3D12_RECT*		GetScissorRect() const { return &m_d3dScissorRect; }
+	const D3D12_VIEWPORT*	GetViewport()	 const { return &m_d3dViewport; }
+	const DirectX::XMFLOAT4X4& GetView()	 const { return m_xmf4x4View; }
+	const DirectX::XMFLOAT4X4& GetProj()	 const { return m_xmf4x4Projection; }
 public:
-	std::shared_ptr<CShader> m_pShader;
+	std::shared_ptr<CGameShader> m_pShader;
 
 protected:
 	DirectX::XMFLOAT4X4 m_xmf4x4View;

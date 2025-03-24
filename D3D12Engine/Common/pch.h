@@ -43,6 +43,7 @@ constexpr int FRAME_BUFFER_HEIGHT = 600;
 
 extern bool CONSOLE_MESSAGE;
 
+
 namespace Random {
 	class Generator {
 	public:
@@ -198,6 +199,12 @@ namespace Vector4 {
 		XMStoreFloat4(&xmf4Result, DirectX::XMVectorScale(XMLoadFloat4(&xmf4Vector1), fScalar));
 		return xmf4Result;
 	}
+	inline DirectX::XMFLOAT4 StoreFloat4(const DirectX::XMVECTOR& xmv4Vector)
+	{
+		DirectX::XMFLOAT4 xmf4Result;
+		XMStoreFloat4(&xmf4Result, xmv4Vector);
+		return xmf4Result;
+	}
 }
 
 
@@ -239,6 +246,28 @@ namespace Matrix4x4
 		XMStoreFloat4x4(&xmmtx4x4Result, XMMatrixTranspose(XMLoadFloat4x4(&xmmtx4x4Matrix)));
 		return xmmtx4x4Result;
 	}
+	inline DirectX::XMFLOAT4X4 TransposeAndPrint(const DirectX::XMFLOAT4X4& xmmtx4x4Matrix, const std::string& name)
+	{
+		// 행렬 출력 (트랜스포즈 전)
+		std::cout << name << " before transpose:" << std::endl;
+		std::cout << xmmtx4x4Matrix._11 << " " << xmmtx4x4Matrix._12 << " " << xmmtx4x4Matrix._13 << " " << xmmtx4x4Matrix._14 << std::endl;
+		std::cout << xmmtx4x4Matrix._21 << " " << xmmtx4x4Matrix._22 << " " << xmmtx4x4Matrix._23 << " " << xmmtx4x4Matrix._24 << std::endl;
+		std::cout << xmmtx4x4Matrix._31 << " " << xmmtx4x4Matrix._32 << " " << xmmtx4x4Matrix._33 << " " << xmmtx4x4Matrix._34 << std::endl;
+		std::cout << xmmtx4x4Matrix._41 << " " << xmmtx4x4Matrix._42 << " " << xmmtx4x4Matrix._43 << " " << xmmtx4x4Matrix._44 << std::endl;
+
+		DirectX::XMFLOAT4X4 xmmtx4x4Result;
+		XMStoreFloat4x4(&xmmtx4x4Result, XMMatrixTranspose(XMLoadFloat4x4(&xmmtx4x4Matrix)));
+		return xmmtx4x4Result;
+	}
+	inline void PrintMatrix4x4(const DirectX::XMFLOAT4X4& xmmtx4x4Matrix, const std::string& name)
+	{
+		std::cout << name << std::endl;
+		std::cout << xmmtx4x4Matrix._11 << " " << xmmtx4x4Matrix._12 << " " << xmmtx4x4Matrix._13 << " " << xmmtx4x4Matrix._14 << std::endl;
+		std::cout << xmmtx4x4Matrix._21 << " " << xmmtx4x4Matrix._22 << " " << xmmtx4x4Matrix._23 << " " << xmmtx4x4Matrix._24 << std::endl;
+		std::cout << xmmtx4x4Matrix._31 << " " << xmmtx4x4Matrix._32 << " " << xmmtx4x4Matrix._33 << " " << xmmtx4x4Matrix._34 << std::endl;
+		std::cout << xmmtx4x4Matrix._41 << " " << xmmtx4x4Matrix._42 << " " << xmmtx4x4Matrix._43 << " " << xmmtx4x4Matrix._44 << std::endl;
+	}
+
 	inline DirectX::XMFLOAT4X4 PerspectiveFovLH(float FovAngleY, float AspectRatio, float NearZ, float FarZ)
 	{
 		DirectX::XMFLOAT4X4 xmmtx4x4Result;

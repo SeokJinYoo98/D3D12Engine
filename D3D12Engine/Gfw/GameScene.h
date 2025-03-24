@@ -4,12 +4,12 @@
 
 class CGameScene {
 public:
-	CGameScene() = default;
+	CGameScene();
 	virtual ~CGameScene() { };
 	virtual void OnDestroy();
 
 public:
-	void InitScene(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, ID3D12DescriptorHeap** pCbvHeap, UINT nWidth, UINT nHeight);
+	void InitScene(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, UINT nWidth, UINT nHeight);
 
 	virtual void ProcessInput(UCHAR* pKeysBuffers);
 	virtual void Update(float fElapsedTime);
@@ -19,15 +19,20 @@ public:
 	virtual void ReleaseObjcets() { };
 	virtual void ReleaseUploadBuffers();
 
+	CCamera*	 GetCamera() { return m_pCamera.get(); }
+	const std::vector<std::shared_ptr<CStaticMeshComponent>>& GetMeshComps() { return m_pMeshCompss; }
+	const std::unordered_map<std::string, std::vector<std::shared_ptr<CStaticMeshComponent>>>& GetMeshes() { return m_pMeshComps; }
+	const DirectX::XMFLOAT4& GetBgColor() const { return m_xmf4BgColor; }
 protected:
-	virtual void BuildObjects(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, ID3D12DescriptorHeap** pCbvHeap);
+	virtual void BuildObjects(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
 	virtual void BuildCameras(UINT nWidth, UINT nHeight);
-	virtual void CreateGraphicsRootSignature(ID3D12Device* pDevice);
-
 private:
 	std::vector<std::unique_ptr<CGameObject>>	m_pGameObjects;
 	std::unique_ptr<CCamera>					m_pCamera;
 
-private:
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pGraphicsRootSignature;
+	std::vector<std::unique_ptr<CNewObject>> m_pNewObjects;
+	std::vector<std::shared_ptr<CStaticMeshComponent>> m_pMeshCompss;
+
+	std::unordered_map<std::string, std::vector<std::shared_ptr<CStaticMeshComponent>>> m_pMeshComps;
+	DirectX::XMFLOAT4 m_xmf4BgColor;
 };

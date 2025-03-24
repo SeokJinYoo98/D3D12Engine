@@ -1,19 +1,19 @@
 ﻿#include "Common\pch.h"
 #include "Renderer/Shader/Shader.h"
 
-CShader::CShader()
+CGameShader::CGameShader()
 {
 }
 
-CShader::~CShader()
+CGameShader::~CGameShader()
 {
 }
 
 // 래스터라이저 상태를 설정하기 위한 구조체를 반환
-D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
+D3D12_RASTERIZER_DESC CGameShader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc{ };
-	d3dRasterizerDesc.FillMode				= D3D12_FILL_MODE_SOLID;
+	d3dRasterizerDesc.FillMode				= D3D12_FILL_MODE_WIREFRAME;
 	d3dRasterizerDesc.CullMode				= D3D12_CULL_MODE_BACK;
 	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
 	d3dRasterizerDesc.DepthBias				= 0;
@@ -29,7 +29,7 @@ D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
 }
 
 // Depth-Stencil 검사를 위한 상태를 설정하기 위한 구조체
-D3D12_DEPTH_STENCIL_DESC CShader::CreateDepthStencilState()
+D3D12_DEPTH_STENCIL_DESC CGameShader::CreateDepthStencilState()
 {
 	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc{ };
 	d3dDepthStencilDesc.DepthEnable						= TRUE;
@@ -50,7 +50,7 @@ D3D12_DEPTH_STENCIL_DESC CShader::CreateDepthStencilState()
 	return d3dDepthStencilDesc;
 }
 
-D3D12_BLEND_DESC CShader::CreateBlendState()
+D3D12_BLEND_DESC CGameShader::CreateBlendState()
 {
 	D3D12_BLEND_DESC d3dBlendDesc{ };
 	d3dBlendDesc.AlphaToCoverageEnable					= FALSE;
@@ -70,7 +70,7 @@ D3D12_BLEND_DESC CShader::CreateBlendState()
 }
 
 // 입력 조립기에서 정점 버퍼의 구조를 알려주기 위한 구조체를 반환.
-D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
+D3D12_INPUT_LAYOUT_DESC CGameShader::CreateInputLayout()
 {
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc{ };
 	d3dInputLayoutDesc.pInputElementDescs = nullptr;
@@ -80,7 +80,7 @@ D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
 }
 
 // 정점 셰이더 바이트 코드를 생성한다.
-D3D12_SHADER_BYTECODE CShader::CreateVertexShader(ID3DBlob** ppShaderBlob)
+D3D12_SHADER_BYTECODE CGameShader::CreateVertexShader(ID3DBlob** ppShaderBlob)
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode{ };
 	d3dShaderByteCode.BytecodeLength = 0;
@@ -88,7 +88,7 @@ D3D12_SHADER_BYTECODE CShader::CreateVertexShader(ID3DBlob** ppShaderBlob)
 	return d3dShaderByteCode;
 }
 // 픽셀 셰이더 바이트 코드를 생성한다.
-D3D12_SHADER_BYTECODE CShader::CreatePixelShader(ID3DBlob** ppShaderBlob)
+D3D12_SHADER_BYTECODE CGameShader::CreatePixelShader(ID3DBlob** ppShaderBlob)
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode{ };
 	d3dShaderByteCode.BytecodeLength = 0;
@@ -96,7 +96,7 @@ D3D12_SHADER_BYTECODE CShader::CreatePixelShader(ID3DBlob** ppShaderBlob)
 	return d3dShaderByteCode;
 }
 // 셰이더 소스 코드를 컴파일하여 바이트 코드 구조체를 반환한다.
-D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob** ppShaderBlob)
+D3D12_SHADER_BYTECODE CGameShader::CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob** ppShaderBlob)
 {
 	UINT nComPileFlags{ };
 #if defined(_DEBUG)
@@ -130,7 +130,7 @@ D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(const WCHAR* pszFileName, L
 }
 
 // 그래픽스 파이프라인 상태 객체를 생성한다.
-void CShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pRootSignature, const std::string& psoName)
+void CGameShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pRootSignature, const std::string& psoName)
 {
 	m_pPSOs[psoName] = nullptr;
 	ID3DBlob* pd3dVertexShaderBlob = nullptr, *pd3dPixelShaderBlob = nullptr;
@@ -160,7 +160,7 @@ void CShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pRootSign
 	if (pd3dPixelShaderBlob) pd3dPixelShaderBlob->Release();
 }
 
-void CShader::BuildCbvDescriptorHeaps(ID3D12Device* pDevice)
+void CGameShader::BuildCbvDescriptorHeaps(ID3D12Device* pDevice)
 {
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
 	::ZeroMemory(&cbvHeapDesc, sizeof(cbvHeapDesc));
@@ -179,7 +179,7 @@ void CShader::BuildCbvDescriptorHeaps(ID3D12Device* pDevice)
 	m_nCbvDescriptorSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-void CShader::BuildConstantBuffers(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, ID3D12DescriptorHeap** pCbvHeap, UINT nElementCount)
+void CGameShader::BuildConstantBuffers(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, UINT nElementCount)
 {
 	m_pObjectCBs = std::make_unique<CUploadBuffer<CB_Object>>(pDevice, nElementCount, true);
 	m_pPassCBs = std::make_unique<CUploadBuffer<CB_Pass>>(pDevice, 1, true);
@@ -187,7 +187,7 @@ void CShader::BuildConstantBuffers(ID3D12Device* pDevice, ID3D12GraphicsCommandL
 	UINT objCBByteSize = ResourceHelper::CalcConstantBufferByteSize(sizeof(CB_Object));
 	UINT objCount = nElementCount;
 	auto objectCB = m_pObjectCBs->Resource();
-	for (int i = 0; i < objCount; ++i) {
+	for (UINT i = 0; i < objCount; ++i) {
 		D3D12_GPU_VIRTUAL_ADDRESS cbAddress = objectCB->GetGPUVirtualAddress();
 		cbAddress += (i * objCBByteSize);
 
@@ -204,7 +204,7 @@ void CShader::BuildConstantBuffers(ID3D12Device* pDevice, ID3D12GraphicsCommandL
 
 	UINT passCBByteSize = ResourceHelper::CalcConstantBufferByteSize(sizeof(CB_Pass));
 	auto passCB = m_pPassCBs->Resource();
-	for (int i = objCount; i < objCount + 1; ++i) {
+	for (UINT i = objCount; i < objCount + 1; ++i) {
 		D3D12_GPU_VIRTUAL_ADDRESS cbAddress = passCB->GetGPUVirtualAddress();
 
 		int heapIndex = i;
@@ -217,17 +217,17 @@ void CShader::BuildConstantBuffers(ID3D12Device* pDevice, ID3D12GraphicsCommandL
 
 		pDevice->CreateConstantBufferView(&cbvDesc, handle);
 	}
-	passIndex = 2;
+	passIndex = static_cast<int>(objCount);
 }
 
-void CShader::UpdateObjectConstant(CB_Object cbData, UINT cbvIndex)
+void CGameShader::UpdateObjectConstant(CB_Object cbData, UINT cbvIndex)
 {
 	currIndex = cbvIndex;
-	DirectX::XMStoreFloat4x4(&cbData.m_xmf4x4World, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&cbData.m_xmf4x4World)));
+	DirectX::XMStoreFloat4x4(&cbData.xmf4x4World, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&cbData.xmf4x4World)));
 	m_pObjectCBs->CopyData(currIndex, cbData);
 }
 
-void CShader::UpdatePassConstant(CB_Pass cbPass)
+void CGameShader::UpdatePassConstant(CB_Pass cbPass)
 {
 	XMStoreFloat4x4(&cbPass.m_xmf4x4View, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&cbPass.m_xmf4x4View)));
 	XMStoreFloat4x4(&cbPass.m_xmf4x4Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&cbPass.m_xmf4x4Projection)));
@@ -235,23 +235,23 @@ void CShader::UpdatePassConstant(CB_Pass cbPass)
 	m_pPassCBs->CopyData(0, cbPass);
 }
 
-void CShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pCommandList)
+void CGameShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pCommandList)
 {
 }
 
 
-void CShader::UpdateShaderVariable(ID3D12GraphicsCommandList* pCommandList, const DirectX::XMFLOAT4X4& xmf4x4World)
+void CGameShader::UpdateShaderVariable(ID3D12GraphicsCommandList* pCommandList, const DirectX::XMFLOAT4X4& xmf4x4World)
 {
 	CB_Object CBGameObjectInfo;
-	XMStoreFloat4x4(&CBGameObjectInfo.m_xmf4x4World, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&xmf4x4World)));
-	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(CB_Object) / 4, &CBGameObjectInfo.m_xmf4x4World, 0);
+	XMStoreFloat4x4(&CBGameObjectInfo.xmf4x4World, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&xmf4x4World)));
+	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(CB_Object) / 4, &CBGameObjectInfo.xmf4x4World, 0);
 }
 
-void CShader::ReleaseShaderVariables()
+void CGameShader::ReleaseShaderVariables()
 {
 }
 
-void CShader::UpdatePassCB(ID3D12GraphicsCommandList* pCommandList)
+void CGameShader::UpdatePassCB(ID3D12GraphicsCommandList* pCommandList)
 {
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_pCbvHeap.Get() };
 	pCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
@@ -262,18 +262,17 @@ void CShader::UpdatePassCB(ID3D12GraphicsCommandList* pCommandList)
 }
 
 
-void CShader::OnPrepareRender(ID3D12GraphicsCommandList* pCommandList, const std::string& psoName, UINT cbIndex)
+void CGameShader::OnPrepareRender(ID3D12GraphicsCommandList* pCommandList, const std::string& psoName, UINT cbIndex)
 {
 	currIndex = cbIndex;
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
 	gpuHandle.Offset(currIndex, m_nCbvDescriptorSize);
-	std::cout << currIndex << ", " << gpuHandle.ptr << std::endl;
 
 	pCommandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
 	pCommandList->SetPipelineState(m_pPSOs[psoName].Get());
 }
 
-void CShader::Render(ID3D12GraphicsCommandList* pCommandList, const std::string& psoName, UINT cbIndex)
+void CGameShader::Render(ID3D12GraphicsCommandList* pCommandList, const std::string& psoName, UINT cbIndex)
 {
 	OnPrepareRender(pCommandList, psoName, cbIndex);
 }
@@ -308,15 +307,6 @@ D3D12_INPUT_LAYOUT_DESC CDiffusedShader::CreateInputLayout()
 			0,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
 			0
-		},
-		{
-			"COLOR",
-			0,
-			DXGI_FORMAT_R32G32B32A32_FLOAT,
-			0,
-			12,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-			0
 		}
 	};
 
@@ -329,12 +319,12 @@ D3D12_INPUT_LAYOUT_DESC CDiffusedShader::CreateInputLayout()
 
 D3D12_SHADER_BYTECODE CDiffusedShader::CreateVertexShader(ID3DBlob** ppShaderBlob)
 {
-	return CShader::CompileShaderFromFile(L"Assets/Shaders/Shaders.hlsl", "VSDiffused", "vs_5_1", ppShaderBlob);
+	return CGameShader::CompileShaderFromFile(L"Assets/Shaders/Shaders.hlsl", "VSDiffused", "vs_5_1", ppShaderBlob);
 }
 
 D3D12_SHADER_BYTECODE CDiffusedShader::CreatePixelShader(ID3DBlob** ppShaderBlob)
 {
-	return CShader::CompileShaderFromFile(L"Assets/Shaders/Shaders.hlsl", "PSDiffused", "ps_5_1", ppShaderBlob);
+	return CGameShader::CompileShaderFromFile(L"Assets/Shaders/Shaders.hlsl", "PSDiffused", "ps_5_1", ppShaderBlob);
 }
 
 void CDiffusedShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pGraphicsRootSignature, const std::string& psoName)
@@ -342,5 +332,37 @@ void CDiffusedShader::CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* p
 	if (m_pPSOs[psoName])
 		return;
 
-	CShader::CreateShader(pDevice, pGraphicsRootSignature, psoName);
+	CGameShader::CreateShader(pDevice, pGraphicsRootSignature, psoName);
+}
+
+void CShader::CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile)
+{
+	UINT nComPileFlags{ };
+#if defined(_DEBUG)
+	nComPileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	Microsoft::WRL::ComPtr<ID3DBlob> pErrorBlob;
+
+	HRESULT hResult = ::D3DCompileFromFile(
+		pszFileName, nullptr, nullptr,
+		pszShaderName, pszShaderProfile,
+		nComPileFlags, 0, m_pShaderBlob.GetAddressOf(), pErrorBlob.GetAddressOf()
+	);
+
+	if (FAILED(hResult))
+	{
+		if (pErrorBlob)
+		{
+			::OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+			std::cout << (char*)pErrorBlob->GetBufferPointer() << std::endl;
+		}
+		// 에러 처리 또는 함수 종료
+		throw std::runtime_error("Shader compilation failed.");
+	}
+}
+
+CShader::CShader(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile)
+{
+	CompileShaderFromFile(pszFileName, pszShaderName, pszShaderProfile);
 }

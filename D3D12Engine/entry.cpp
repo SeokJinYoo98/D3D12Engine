@@ -22,5 +22,6 @@ int APIENTRY wWinMain(
     CreateConsoleWindow();
     CGameFramework D3D;
     D3D.InitGame(hInstance, nCmdShow, 800, 600);
+  
     return D3D.Run();
 }

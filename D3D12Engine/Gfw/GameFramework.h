@@ -27,5 +27,6 @@ private:
 private:
 	std::unique_ptr<CGameScene>		m_pGameScene;
 	std::unique_ptr<CRenderer>		m_pGameRenderer;
+	
 };
 

@@ -36,7 +36,7 @@ void CD3D12Device::InitDevice(HWND hWnd, UINT nWidth, UINT nHeight)
 	hResult = ::D3D12CreateDevice(
 		nullptr, // 기본 어댑터 사용하겠다.
 		D3D_FEATURE_LEVEL_11_0,
-		IID_PPV_ARGS(&m_pD3dDevice)
+		IID_PPV_ARGS(&m_pDevice)
 	);
 
 	if (FAILED(hResult)) {
@@ -49,10 +49,10 @@ void CD3D12Device::InitDevice(HWND hWnd, UINT nWidth, UINT nHeight)
 		wrapResult = D3D12CreateDevice(
 			pWrapAdapter.Get(),
 			D3D_FEATURE_LEVEL_11_0,
-			IID_PPV_ARGS(&m_pD3dDevice)
+			IID_PPV_ARGS(&m_pDevice)
 		);
 	}
-	hResult = m_pD3dDevice->CreateFence(
+	hResult = m_pDevice->CreateFence(
 		0,
 		D3D12_FENCE_FLAG_NONE,
 		IID_PPV_ARGS(&m_pFence)
@@ -71,7 +71,7 @@ void CD3D12Device::InitDevice(HWND hWnd, UINT nWidth, UINT nHeight)
 	d3dMsaaQualityLevels.Flags				= D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
 	d3dMsaaQualityLevels.NumQualityLevels	= 0;
 
-	hResult = m_pD3dDevice->CheckFeatureSupport(
+	hResult = m_pDevice->CheckFeatureSupport(
 		D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,
 		&d3dMsaaQualityLevels,
 		sizeof(d3dMsaaQualityLevels)
@@ -83,8 +83,9 @@ void CD3D12Device::InitDevice(HWND hWnd, UINT nWidth, UINT nHeight)
 	m_nMsaa4xQuality = d3dMsaaQualityLevels.NumQualityLevels;
 	m_bMsaa4xEnable = (m_nMsaa4xQuality > 1) ? true : false;
 
-	m_nRtvDescriptorSize = m_pD3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	m_nDsvDescriptorSize = m_pD3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	m_nRtvDescriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	m_nDsvDescriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	m_nCbvDescriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	CreateCommandObject();
 	CreateSwapChain(hWnd, nWidth, nHeight);
@@ -144,7 +145,7 @@ void CD3D12Device::CreateRtvAndDsvDescriptorHeap()
 	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	rtvHeapDesc.NodeMask = 0;
 
-	HRESULT hResult = m_pD3dDevice->CreateDescriptorHeap(
+	HRESULT hResult = m_pDevice->CreateDescriptorHeap(
 		&rtvHeapDesc,
 		IID_PPV_ARGS(m_pRtvHeap.GetAddressOf())
 	);
@@ -155,7 +156,7 @@ void CD3D12Device::CreateRtvAndDsvDescriptorHeap()
 	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	dsvHeapDesc.NodeMask = 0;
 
-	hResult = m_pD3dDevice->CreateDescriptorHeap(
+	hResult = m_pDevice->CreateDescriptorHeap(
 		&dsvHeapDesc,
 		IID_PPV_ARGS(m_pDsvHeap.GetAddressOf())
 	);
@@ -165,14 +166,14 @@ void CD3D12Device::CreateCommandObject()
 	D3D12_COMMAND_QUEUE_DESC queueDesc{ };
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-	m_pD3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue));
+	m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue));
 
-	m_pD3dDevice->CreateCommandAllocator(
+	m_pDevice->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		IID_PPV_ARGS(&m_pCommandAllocator)
 	);
 
-	m_pD3dDevice->CreateCommandList(
+	m_pDevice->CreateCommandList(
 		0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		m_pCommandAllocator.Get(),
@@ -186,7 +187,7 @@ void CD3D12Device::CreateCommandObject()
 
 void CD3D12Device::OnResize(HWND hWnd, UINT nWidth, UINT nHeight)
 {
-	assert(m_pD3dDevice);
+	assert(m_pDevice);
 	assert(m_pSwapChain);
 	assert(m_pCommandAllocator);
 
@@ -273,11 +274,40 @@ void CD3D12Device::MoveToNextFrame()
 	}
 }
 
+void CD3D12Device::CreateCbvDescriptorHeap(UINT nMesh, UINT nPass, UINT nFrame)
+{
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
+	::ZeroMemory(&cbvHeapDesc, sizeof(cbvHeapDesc));
+
+	cbvHeapDesc.NumDescriptors = nMesh + nPass;
+	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDesc.NodeMask = 0;
+	HRESULT hResult = m_pDevice->CreateDescriptorHeap(
+		&cbvHeapDesc,
+		IID_PPV_ARGS(m_pCbvHeap.GetAddressOf())
+	);
+
+	if (FAILED(hResult))
+		throw std::runtime_error("Failed to Create Cbv Heap");
+}
+
+
 void CD3D12Device::ResetCommandAlloc()
 {
 	// 명령 할당자와 명령 리스트를 리셋한다.
 	HRESULT hResult = m_pCommandAllocator->Reset();
 	hResult = m_pCommandList->Reset(m_pCommandAllocator.Get(), nullptr);
+}
+
+void CD3D12Device::ResetCommandAlloc(ID3D12CommandAllocator* pCmdAlloc, ID3D12PipelineState* pPso)
+{
+	HRESULT hResult = pCmdAlloc->Reset();
+	if (FAILED(hResult))
+		throw std::runtime_error("Failed to reset CmdAlloc");
+	hResult = m_pCommandList->Reset(pCmdAlloc, pPso);
+	if (FAILED(hResult))
+		throw std::runtime_error("Failed to reset CmdList");
 }
 
 void CD3D12Device::ExcuteCommandList()
@@ -307,7 +337,7 @@ void CD3D12Device::TransitionResourceFromPresentToRenderTarget()
 	m_pCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 }
 
-void CD3D12Device::ClearRenderTargetAndDepthStencil(const DirectX::XMVECTOR& xmvClearColor)
+void CD3D12Device::ClearRenderTargetAndDepthStencil(const DirectX::XMFLOAT4& xmf4BgColor)
 {
 	// RTV 핸들 계산
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle =
@@ -327,11 +357,9 @@ void CD3D12Device::ClearRenderTargetAndDepthStencil(const DirectX::XMVECTOR& xmv
 	);
 
 	// 렌더 타겟뷰를 지운다.
-	DirectX::XMFLOAT4 clearColor;
-	DirectX::XMStoreFloat4(&clearColor, xmvClearColor);
 	m_pCommandList->ClearRenderTargetView(
 		d3dRtvCPUDescriptorHandle,
-		reinterpret_cast<const float*>(&clearColor),
+		&xmf4BgColor.x,
 		0,
 		nullptr
 	);
@@ -367,7 +395,7 @@ void CD3D12Device::CreateRenderTargetView()
 	for (UINT i = 0; i < SWAP_CHAIN_FRAME_COUNT; ++i) {
 		m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pSwapChainBuffers[i]));
 
-		m_pD3dDevice->CreateRenderTargetView(
+		m_pDevice->CreateRenderTargetView(
 			m_pSwapChainBuffers[i].Get(),
 			nullptr,
 			d3dRtvCPUDescriptorHandle
@@ -409,7 +437,7 @@ void CD3D12Device::CreateDepthStecilView(HWND hWnd, UINT nWidth, UINT nHeight)
 	d3dClearValue.DepthStencil.Depth	= 1.0f;
 	d3dClearValue.DepthStencil.Stencil	= 0;
 
-	m_pD3dDevice->CreateCommittedResource(
+	m_pDevice->CreateCommittedResource(
 		&d3dHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&d3dResourceDesc,
@@ -421,7 +449,7 @@ void CD3D12Device::CreateDepthStecilView(HWND hWnd, UINT nWidth, UINT nHeight)
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle =
 		m_pDsvHeap->GetCPUDescriptorHandleForHeapStart();
 
-	m_pD3dDevice->CreateDepthStencilView(
+	m_pDevice->CreateDepthStencilView(
 		m_pDepthStencilBuffer.Get(),
 		nullptr,
 		d3dDsvCPUDescriptorHandle

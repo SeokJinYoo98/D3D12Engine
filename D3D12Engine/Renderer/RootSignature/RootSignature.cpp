@@ -1,31 +1,64 @@
 ﻿#include "Common\pch.h"
 #include "RootSignature.h"
 
-void CRootSignature::Init(ID3D12Device* pDevice)
+CRootSignature::CRootSignature(ID3D12Device* pDevice)
 {
-	auto rootSigDesc = CreateRootSignatureDesc();
-	ID3DBlob* pd3dSignatureBlob = nullptr;
-	ID3DBlob* pd3dErrorBlob = nullptr;
-	
-	if (!SerializeRootSignature(rootSigDesc, &pd3dSignatureBlob, &pd3dErrorBlob)) {
-		pd3dSignatureBlob->Release();
-		pd3dErrorBlob->Release();
-		throw std::runtime_error("Failed to SerializeRootSignature");
-	}
-
-	if (!CreateRootSignature(pDevice, pd3dSignatureBlob)) {
-		pd3dSignatureBlob->Release();
-		pd3dErrorBlob->Release();
-		throw std::runtime_error("Failed to CreateRootSignature");
-	}
-
-	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
-	if (pd3dErrorBlob) pd3dErrorBlob->Release();
+	Init(pDevice);
 }
 
-void CRootSignature::Destroy()
+void CRootSignature::Init(ID3D12Device* pDevice)
 {
+	/*
+		셰이더 프로그램은 보통 상수 버퍼, 텍스처, 샘플러와 같이 외부 리소스를 입력으로 사용
+		루트 시그니처는 셰이더가 어떤 리소스를 필요로 하는지를 정의하는 역할
+		셰이더를 함수에 비유하면, 입력 리소스는 함수의 매개변수와 같고,
+		루트 시그니처는 그 함수의 정의를 나타낸다 볼 수 있다.
+	*/
 
+	//	루트 파라미터는 디스크립터 테이블, 루트 디스크립터, 루트 상수 등의 형태로 정의될 수 있다.
+	// [루트 파라미터 0] : b0을 위한 CBV
+	CD3DX12_ROOT_PARAMETER cd3dRootParameters[2];
+
+	CD3DX12_DESCRIPTOR_RANGE rangeObject;
+	rangeObject.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	CD3DX12_DESCRIPTOR_RANGE rangePass;
+	rangePass.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
+
+	cd3dRootParameters[0].InitAsDescriptorTable(1, &rangeObject);
+	cd3dRootParameters[1].InitAsDescriptorTable(1, &rangePass);
+
+	// 루트 시그니처 설명자 생성 (두 개의 루트 파라미터를 사용)
+	CD3DX12_ROOT_SIGNATURE_DESC cd3dRootSigDesc(
+		_countof(cd3dRootParameters), cd3dRootParameters,
+		0, nullptr,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+	);
+
+
+	Microsoft::WRL::ComPtr<ID3DBlob> pSerializedRootSig;
+	Microsoft::WRL::ComPtr<ID3DBlob> pErrorBlob;
+
+	::D3D12SerializeRootSignature(
+		&cd3dRootSigDesc,
+		D3D_ROOT_SIGNATURE_VERSION_1,
+		pSerializedRootSig.GetAddressOf(),
+		pErrorBlob.GetAddressOf()
+	);
+
+	if (pErrorBlob != nullptr)
+	{
+		::OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+	}
+
+	HRESULT hResult = pDevice->CreateRootSignature(
+		0,
+		pSerializedRootSig->GetBufferPointer(),
+		pSerializedRootSig->GetBufferSize(),
+		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())
+	);
+
+	if (FAILED(hResult))
+		throw std::runtime_error("Failed to create ");
 }
 
 BOOL CRootSignature::CreateRootSignature(ID3D12Device* pDevice, ID3DBlob* pSignatureBlob)

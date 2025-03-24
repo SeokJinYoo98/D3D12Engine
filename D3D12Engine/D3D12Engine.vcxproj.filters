@@ -69,6 +69,12 @@
     <ClInclude Include="Renderer\UploadBuffer\UploadBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\PSO\PSO.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\UploadBuffer\FrameResource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\pch.cpp">
@@ -117,6 +123,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\UploadBuffer\UploadBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\PSO\PSO.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\UploadBuffer\FrameResource.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

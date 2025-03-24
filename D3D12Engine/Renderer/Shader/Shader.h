@@ -5,18 +5,33 @@ class CCamera;
 
 struct CB_Object
 {
-	DirectX::XMFLOAT4X4 m_xmf4x4World = Matrix4x4::Identity();
+	DirectX::XMFLOAT4X4 xmf4x4World = Matrix4x4::Identity();
+	DirectX::XMFLOAT4	xmf4Color = { 0.0f, 0.0f, 0.0f, 1.0f };
 };
 
 struct CB_Pass {
 	DirectX::XMFLOAT4X4 m_xmf4x4View = Matrix4x4::Identity();
 	DirectX::XMFLOAT4X4 m_xmf4x4Projection = Matrix4x4::Identity();
 };
-class CShader
+class CShader 
 {
 public:
-	CShader();
-	virtual ~CShader();
+	CShader() = delete;
+	CShader(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile);
+	virtual ~CShader() { }
+
+	ID3DBlob* GetpShaderBlob() { return m_pShaderBlob.Get(); }
+protected:
+	void CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile);
+	
+protected:
+	Microsoft::WRL::ComPtr<ID3DBlob>				m_pShaderBlob;
+};
+class CGameShader
+{
+public:
+	CGameShader();
+	virtual ~CGameShader();
 
 public:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
@@ -30,7 +45,7 @@ public:
 
 	virtual void CreateShader(ID3D12Device* pDevice, ID3D12RootSignature* pRootSignature, const std::string& psoName);
 	virtual void BuildCbvDescriptorHeaps(ID3D12Device* pDevice);
-	virtual void BuildConstantBuffers(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, ID3D12DescriptorHeap** pCbvHeap, UINT nElementCount);
+	virtual void BuildConstantBuffers(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, UINT nElementCount);
 	virtual void UpdateObjectConstant(CB_Object cbData, UINT cbvIndex);
 	virtual void UpdatePassConstant(CB_Pass cbPass);
 
@@ -64,7 +79,7 @@ protected:
 		드로우 호출 전에 해야하는데
 
 */
-class CDiffusedShader :public CShader
+class CDiffusedShader :public CGameShader
 {
 public:
 	CDiffusedShader();

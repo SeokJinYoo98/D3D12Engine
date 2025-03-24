@@ -36,16 +36,17 @@ protected:
 
 class CMesh {
 public:
+	CMesh() { }
 	CMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
 
 	virtual ~CMesh();
 private:
 	virtual void CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) { }
 	virtual void CreateIndexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList) { }
-
+	
 public:
 	void ReleaseUploadBuffers();
-
+	virtual void ShowMyName() { std::cout << m_strName << std::endl; }
 protected:
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_pVertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_pVertexUploadBuffer;
@@ -64,6 +65,8 @@ protected:
 	UINT m_nIndices;
 	UINT m_nIndexOffset;
 	UINT m_nIndexStride{ };
+
+	std::string m_strName{ "None" };
 public:
 	virtual void Render(ID3D12GraphicsCommandList* pCommandList);
 };
@@ -80,6 +83,7 @@ private:
 
 class CCubeMesh :public CMesh {
 public:
+	CCubeMesh() { m_strName = "Cube"; }
 	CCubeMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList);
 
 private:

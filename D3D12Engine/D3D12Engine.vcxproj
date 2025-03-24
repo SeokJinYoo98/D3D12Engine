@@ -105,6 +105,9 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common/pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)D3D12Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -134,7 +137,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Renderer\UploadBuffer\FrameResource.h" />
     <ClInclude Include="Gfw\Component\Component.h" />
+    <ClInclude Include="Renderer\PSO\PSO.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Renderer\D3D12Device\D3D12Device.h" />
     <ClInclude Include="Gfw\Camera\Camera.h" />
@@ -153,8 +158,10 @@
     <ClInclude Include="Renderer\UploadBuffer\UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Renderer\UploadBuffer\FrameResource.cpp" />
     <ClCompile Include="Gfw\Component\Component.cpp" />
     <ClCompile Include="entry.cpp" />
+    <ClCompile Include="Renderer\PSO\PSO.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Renderer\D3D12Device\D3D12Device.cpp" />
     <ClCompile Include="Gfw\Camera\Camera.cpp" />
@@ -169,6 +176,8 @@
     <ClCompile Include="Common\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Renderer\ResourceManager.cpp" />
     <ClCompile Include="Renderer\RootSignature\RootSignature.cpp" />
