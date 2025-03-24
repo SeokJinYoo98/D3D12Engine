@@ -26,7 +26,7 @@ protected:
 	virtual void				UpdateClientRect();
 	virtual void				OnResize();
 	
-	virtual void				ProcessInput()			   { }
+	virtual void				ProcessInput(float fElapsedTime) { }
 	virtual void				Render(float fElapsedTime) { }
 	virtual void				Update(float fElapsedTime) { }
 
@@ -35,8 +35,8 @@ protected:
 	virtual void				OnMouseUp(WPARAM btnState, int x, int y)		{ }
 	virtual void				OnMouseMove(WPARAM btnState, int x, int y)		{ }
 
-	virtual void				OnKeyboardDown(WPARAM wParam, LPARAM lParam)	{ }
-	virtual void				OnKeyboardUp(WPARAM wParam, LPARAM lParam)		{ }
+	virtual void				OnKeyboardDown(WPARAM wParam, LPARAM lParam);
+	virtual void				OnKeyboardUp(WPARAM wParam, LPARAM lParam);
 protected:
 	static constexpr int		MAX_LOADSTRING{ 100 };
 
@@ -59,5 +59,7 @@ protected:
 
 	CGameTimer					m_gameTimer			= { };
 	_TCHAR						m_pszFrameRate[50]	= { };
+
+	UCHAR m_keyState[256] = { };
 };
 

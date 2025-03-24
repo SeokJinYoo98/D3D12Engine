@@ -17,7 +17,7 @@ private:
 	void OnDestroy() override;
 
 private:
-	void ProcessInput() override;
+	void ProcessInput(float fElapsedTime) override;
 	void Update(float fElapsedTime) override;
 	void Render(float fElapsedTime) override;
 
@@ -27,6 +27,6 @@ private:
 private:
 	std::unique_ptr<CGameScene>		m_pGameScene;
 	std::unique_ptr<CRenderer>		m_pGameRenderer;
-	
+
 };
 

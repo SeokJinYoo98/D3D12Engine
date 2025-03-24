@@ -9,12 +9,11 @@ CStaticMeshComponent::CStaticMeshComponent()
 DirectX::XMFLOAT4X4 CStaticMeshComponent::GetTransform() const
 {
 	DirectX::XMFLOAT4X4 xmf4x4Tr = m_xmf4x4Local;
-	Matrix4x4::PrintMatrix4x4(xmf4x4Tr, "Local");
-	Matrix4x4::PrintMatrix4x4(*m_pWorld, "World");
+
 	if (m_pWorld) {
 		xmf4x4Tr = Matrix4x4::Multiply(xmf4x4Tr, *m_pWorld);
 	}
-	Matrix4x4::PrintMatrix4x4(xmf4x4Tr, "World*Local");
+
 	return xmf4x4Tr;
 }
 

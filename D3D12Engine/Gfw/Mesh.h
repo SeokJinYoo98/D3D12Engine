@@ -33,7 +33,14 @@ protected:
 	DirectX::XMFLOAT4 m_xmf4Diffuse;
 };
 
+// TODO: 월드 그리드 추가하자
+class CLine 
+{
+public:
+	CLine();
 
+
+};
 class CMesh {
 public:
 	CMesh() { }

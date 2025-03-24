@@ -177,7 +177,7 @@ LRESULT CD3DApp::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 0;
     case WM_SYSKEYUP:
     case WM_KEYUP:
-        OnKeyboardDown(wParam, lParam);
+        OnKeyboardUp(wParam, lParam);
         return 0;
 
     case WM_LBUTTONDOWN:
@@ -204,7 +204,7 @@ LRESULT CD3DApp::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void CD3DApp::FrameAdvance(float fElapsedTime)
 {
-    ProcessInput();
+    ProcessInput(fElapsedTime);
     Update(fElapsedTime);
     Render(fElapsedTime);
     CalculateFrameRate();
@@ -284,6 +284,22 @@ void CD3DApp::UpdateClientRect()
 void CD3DApp::OnResize()
 {
     UpdateClientRect();
+}
+
+void CD3DApp::OnKeyboardDown(WPARAM wParam, LPARAM lParam)
+{
+    if (wParam < 256)
+    {
+        m_keyState[wParam] |= 0x80;
+    }
+}
+
+void CD3DApp::OnKeyboardUp(WPARAM wParam, LPARAM lParam)
+{
+    if (wParam < 256)
+    {
+        m_keyState[wParam] &= ~0x80;
+    }
 }
 
 float CD3DApp::AspectRatio()

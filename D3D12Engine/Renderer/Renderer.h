@@ -16,20 +16,16 @@ public:
 	void	Render(CGameScene* pGameScene);
 	void	Update(CGameScene* pGameScene);
 
-
-	void	BeginRendering(const DirectX::XMFLOAT4& xmf4BgColor);
-	void	EndRendering();
 private:
 	void	UpdatePassCB(CGameScene* pGameScene);
 	void	UpdateMeshCB(CGameScene* pGameScene);
+	void	RenderScene(CGameScene* pGameScene);
 
 private:
 	void	BuildResourceManager();
 	void	BuildFrameResource(UINT nMesh, UINT nPass, UINT nFrame);
 	void	BuildConstantBufferViews(UINT nMesh, UINT nPass, UINT nFrame);
-	
-	void	SetViewportsAndScissorRects(CCamera* pCamera);
-	void	RenderScene(CGameScene* pGameScene);
+
 private:
 	std::unique_ptr<CUploadBuffer<MeshConstants>> m_pMeshCBs;
 	std::unique_ptr<CUploadBuffer<PassConstants>> m_pPassCBs;

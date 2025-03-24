@@ -30,19 +30,10 @@ void CCamera::SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom)
 	m_d3dScissorRect.bottom = yBottom;
 }
 
-void CCamera::SetViewportsAndScissorRects(ID3D12GraphicsCommandList* pCommandList)
-{
-	pCommandList->RSSetViewports(1, &m_d3dViewport);
-	pCommandList->RSSetScissorRects(1, &m_d3dScissorRect);
-}
 
-void CCamera::Update()
+void CCamera::Update(float fElapsedTime)
 {
-	CB_Pass CBCameraInfo;
-	CBCameraInfo.m_xmf4x4Projection = m_xmf4x4Projection;
-	CBCameraInfo.m_xmf4x4View = m_xmf4x4View;
 
-	m_pShader->UpdatePassConstant(CBCameraInfo);
 }
 
 void CCamera::Render()
@@ -58,22 +49,7 @@ void CCamera::OnResize(const RECT& rcClient)
 {
 }
 
-void CCamera::GenerateViewMatrix(DirectX::XMFLOAT3 xmf3Position, DirectX::XMFLOAT3 xmf3LookAt, DirectX::XMFLOAT3 xmf3Up)
+void CCamera::GenerateViewMatrix(const DirectX::XMFLOAT3& xmf3Pos, const DirectX::XMFLOAT3& xmf3LookAt, const DirectX::XMFLOAT3& xmf3Up)
 {
-	m_xmf4x4View = Matrix4x4::LookAtLH(xmf3Position, xmf3LookAt, xmf3Up);
-}
-
-
-void CCamera::CreateShaderVariables(const Microsoft::WRL::ComPtr<ID3D12Device>& pDevice, const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& pCommandList)
-{
-}
-
-void CCamera::ReleaseShaderVariables()
-{
-}
-
-void CCamera::UpdateShaderVariables(ID3D12GraphicsCommandList* pCommandList)
-{
-
-	m_pShader->UpdatePassCB(pCommandList);
+	m_xmf4x4View = Matrix4x4::LookAtLH(xmf3Pos, xmf3LookAt, xmf3Up);
 }
