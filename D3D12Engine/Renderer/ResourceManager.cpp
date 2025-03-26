@@ -1,5 +1,6 @@
 ﻿#include "Common\pch.h"
 #include "ResourceManager.h"
+#include "Mesh/Polygon/PolygonGenerator.h"
 
 void CResourceManager::InitBegin(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
 {
@@ -11,24 +12,14 @@ void CResourceManager::InitBegin(ID3D12Device* pDevice, ID3D12GraphicsCommandLis
 
 void CResourceManager::InitEnd()
 {
-	for (auto& [name, mesh] : m_meshMap)
-		mesh->ReleaseUploadBuffers();
-	for (auto& [name, mesh] : m_meshSharedMap)
+	for (auto& [name, mesh] : m_newMeshMap)
 		mesh->ReleaseUploadBuffers();
 }
 
-std::shared_ptr<CMesh> CResourceManager::LoadSharedMesh(const std::string& meshName)
+CBaseMesh* CResourceManager::LoadNewMesh(const std::string& meshName)
 {
-	auto it = m_meshSharedMap.find(meshName);
-	if (it == m_meshSharedMap.end())
-		return nullptr;
-	return it->second;
-}
-
-CMesh* CResourceManager::LoadMesh(const std::string& name)
-{
-	auto it = m_meshMap.find(name);
-	if (it == m_meshMap.end())
+	auto it = m_newMeshMap.find(meshName);
+	if (it == m_newMeshMap.end())
 		return nullptr;
 	return it->second.get();
 }
@@ -57,22 +48,31 @@ void CResourceManager::BuildRootSig(ID3D12Device* pDevice)
 
 void CResourceManager::BuildMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList)
 {
-	m_meshMap["Cube"] = std::make_unique<CCubeMesh>(pDevice, pCommandList);
-	m_meshSharedMap["Cube"] = std::make_shared<CCubeMesh>(pDevice, pCommandList);
+	CPolygonGenerator polyGen;
+	auto CubePolygon = polyGen.GenFromObjModel("Cube");
+	m_newMeshMap["Cube"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, CubePolygon.get());
+	auto TankPolygon = polyGen.GenFromObjModel("tank");
+	m_newMeshMap["Tank"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, TankPolygon.get());
 }
 
 void CResourceManager::BuildShader(ID3D12Device* pDevice)
 {
-	m_shaderMap["Vs"] = std::make_unique<CShader>(L"Assets/Shaders/Shaders.hlsl", "VSDiffused", "vs_5_1");
-	m_shaderMap["Ps"] = std::make_unique<CShader>(L"Assets/Shaders/Shaders.hlsl", "PSDiffused", "ps_5_1");
+	m_shaderMap["VSDefault"] = std::make_unique<CShader>(L"Assets/Shaders/Shaders.hlsl", "VSDefault", "vs_5_1");
+	m_shaderMap["PSDefault"] = std::make_unique<CShader>(L"Assets/Shaders/Shaders.hlsl", "PSDefault", "ps_5_1");
+
+	m_shaderMap["VSDiffused"] = std::make_unique<CShader>(L"Assets/Shaders/DiffusedShader.hlsl", "VSDiffused", "vs_5_1");
+	m_shaderMap["PSDiffused"] = std::make_unique<CShader>(L"Assets/Shaders/DiffusedShader.hlsl", "PSDiffused", "ps_5_1");
 }
 
 void CResourceManager::BuildPSO(ID3D12Device* pDevice)
 {
-	auto pRootSig = m_rootSignatureMap["Default"]->GetRootSignature();
-	auto pVs = m_shaderMap["Vs"]->GetpShaderBlob();
-	auto pPs = m_shaderMap["Ps"]->GetpShaderBlob();
+	auto pRootSig	= m_rootSignatureMap["Default"]->GetRootSignature();
+	auto pDefaultVs = m_shaderMap["VSDefault"]->GetpShaderBlob();
+	auto pDefaultPs = m_shaderMap["PSDefault"]->GetpShaderBlob();
+	m_psoMap["Opaque"]		= std::make_unique<COpaquePSO>(pDevice, pRootSig, pDefaultVs, pDefaultPs);
+	m_psoMap["OpaqueLine"]	= std::make_unique<COpaqueLinePSO>(pDevice, pRootSig, pDefaultVs, pDefaultPs);
 
-	m_psoMap["Opaque"]		= std::make_unique<COpaquePSO>(pDevice, pRootSig, pVs, pPs);
-	m_psoMap["OpaqueLine"]	= std::make_unique<COpaqueLinePSO>(pDevice, pRootSig, pVs, pPs);
+	auto pDiffusedVs = m_shaderMap["VSDiffused"]->GetpShaderBlob();
+	auto pDiffsuedPs = m_shaderMap["PSDiffused"]->GetpShaderBlob();
+	m_psoMap["Diffused"]	= std::make_unique<CDiffusedPSO>(pDevice, pRootSig, pDiffusedVs, pDiffsuedPs);
 }

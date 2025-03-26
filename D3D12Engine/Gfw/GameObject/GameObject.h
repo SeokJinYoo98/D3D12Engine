@@ -1,7 +1,6 @@
 ﻿#pragma once
-#include "Mesh.h"
-#include "Renderer/Shader/Shader.h"
-#include "Component/Component.h"
+#include "Gfw/Component/Component.h"
+
 class CGameObject {
 public:
 	CGameObject();

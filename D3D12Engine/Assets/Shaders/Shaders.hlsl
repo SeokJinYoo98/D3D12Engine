@@ -13,6 +13,8 @@ cbuffer cbCameraInfo : register(b1)
 struct VS_INPUT
 {
     float3 position : POSITION;
+    float3 normal : NORMAL;
+    float2 uv : UV;
 };
 
 struct VS_OUTPUT
@@ -21,7 +23,7 @@ struct VS_OUTPUT
     float4 color : COLOR;
 };
 
-VS_OUTPUT VSDiffused(VS_INPUT input)
+VS_OUTPUT VSDefault(VS_INPUT input)
 {
     VS_OUTPUT output;
 
@@ -30,7 +32,7 @@ VS_OUTPUT VSDiffused(VS_INPUT input)
     return (output);
 }
 
-float4 PSDiffused(VS_OUTPUT input) : SV_TARGET
+float4 PSDefault(VS_OUTPUT input) : SV_TARGET
 {
     return (input.color);
 }

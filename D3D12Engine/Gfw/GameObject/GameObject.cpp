@@ -16,8 +16,6 @@ CGameObject::CGameObject()
 
 void CGameObject::Update(float fElapsedTime)
 {
-	Rotate(1.f, 0.f, 0.f, 45.f * fElapsedTime);
-	UpdateMeshes(fElapsedTime);
 }
 
 void CGameObject::UpdateMeshes(float fElapsedTime)

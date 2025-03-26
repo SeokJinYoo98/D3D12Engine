@@ -30,16 +30,16 @@
     <ClInclude Include="Gfw\GameFramework.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\GameScene.h">
+    <ClInclude Include="Gfw\GameScene\GameScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Gfw\App\GameTimer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\Mesh.h">
+    <ClInclude Include="Renderer\Mesh\Mesh.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\GameObject.h">
+    <ClInclude Include="Gfw\GameObject\GameObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Gfw\Camera\Camera.h">
@@ -75,6 +75,15 @@
     <ClInclude Include="Renderer\UploadBuffer\FrameResource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Common\AssetLoader\ObjModelLoader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Mesh\Polygon\PolygonGenerator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Mesh\Polygon\Polygon.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\pch.cpp">
@@ -83,16 +92,16 @@
     <ClCompile Include="Gfw\GameFramework.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\GameScene.cpp">
+    <ClCompile Include="Gfw\GameScene\GameScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Gfw\App\GameTimer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\Mesh.cpp">
+    <ClCompile Include="Renderer\Mesh\Mesh.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\GameObject.cpp">
+    <ClCompile Include="Gfw\GameObject\GameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Gfw\Camera\Camera.cpp">
@@ -131,6 +140,15 @@
     <ClCompile Include="Renderer\UploadBuffer\FrameResource.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Common\AssetLoader\ObjModelLoader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Mesh\Polygon\PolygonGenerator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Mesh\Polygon\Polygon.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\D3D12Engine.rc">
@@ -149,6 +167,6 @@
     <FxCompile Include="Assets\Shaders\Shaders.hlsl">
       <Filter>셰이더 파일</Filter>
     </FxCompile>
-    <FxCompile Include="assets\Shaders\shader.hlsl" />
+    <FxCompile Include="assets\Shaders\DiffusedShader.hlsl" />
   </ItemGroup>
 </Project>

@@ -24,7 +24,10 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include <map>
+#include <set>
 #include <unordered_map>
+
 #include <random>
 
 #include <dxgi1_4.h>
@@ -94,11 +97,21 @@ namespace ResourceHelper {
 }
 
 namespace Vector3 {
+
 	inline DirectX::XMFLOAT3 XMVectorToFloat3(const DirectX::XMVECTOR& xmvVector)
 	{
 		DirectX::XMFLOAT3 xmf3Result;
 		DirectX::XMStoreFloat3(&xmf3Result, xmvVector);
 		return xmf3Result;
+	}
+	inline DirectX::XMFLOAT3 RotateY(const DirectX::XMFLOAT3& xmfvector, float angle)
+	{
+		DirectX::XMVECTOR vec = DirectX::XMLoadFloat3(&xmfvector);
+		DirectX::XMMATRIX matRotation = DirectX::XMMatrixRotationY(angle);
+		DirectX::XMVECTOR rotatedVec = DirectX::XMVector3Transform(vec, matRotation);
+		DirectX::XMFLOAT3 result;
+		DirectX::XMStoreFloat3(&result, rotatedVec);
+		return result;
 	}
 	inline DirectX::XMFLOAT3 ScalarProduct(const DirectX::XMFLOAT3& xmf3Vector, float fScalar, bool bNormalize = true)
 	{

@@ -31,6 +31,9 @@ void CGameFramework::OnDestroy()
 }
 void CGameFramework::ProcessInput(float fElapsedTime)
 {
+	if (m_keyState) {
+
+	}
 	if (m_pGameScene)
 		m_pGameScene->ProcessInput(m_keyState, fElapsedTime);
 }
@@ -46,7 +49,9 @@ void CGameFramework::Update(float fElapsedTime)
 void CGameFramework::Render(float fElapsedTime)
 {
 	if (m_pGameScene)
-		m_pGameRenderer->Render(m_pGameScene.get());
+	{
+		m_pGameRenderer->Render(m_pGameScene.get(), m_bDrawWorldGizmo);
+	}
 }
 
 void CGameFramework::BuildScene()

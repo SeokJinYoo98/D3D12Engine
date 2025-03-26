@@ -32,7 +32,7 @@ protected:
 	void PresentSwapChain();
 	void MoveToNextFrame();
 
-	virtual void CreateCbvDescriptorHeap(UINT nMesh, UINT nPass, UINT nFrame);
+	virtual void CreateCbvDescriptorHeap(UINT nMesh, UINT nUI, UINT nPass);
 public:
 	static constexpr UINT SWAP_CHAIN_FRAME_COUNT = 2;
 

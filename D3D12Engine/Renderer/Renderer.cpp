@@ -1,21 +1,21 @@
 ﻿#include "Common\pch.h"
 #include "Renderer.h"
-#include "Gfw/GameScene.h"
+#include "Gfw/GameScene/GameScene.h"
 
 CRenderer::CRenderer()
 {
 }
 void CRenderer::InitRenderer(HWND hWnd, UINT nWidth, UINT nHeight)
 {
-	UINT nMesh = 5, nPass = 1, nFrame = 1;
+	UINT nMesh = 5, nPass = 1, nUI = 0;
 
 	CD3D12Device::InitDevice(hWnd, nWidth, nHeight);
-	CD3D12Device::CreateCbvDescriptorHeap(nMesh, nPass, nFrame);
-	BuildConstantBufferViews(nMesh, nPass, nFrame);
+	CD3D12Device::CreateCbvDescriptorHeap(nMesh, nUI, nPass);
+	BuildConstantBufferViews(nMesh, nUI, nPass);
 
 	BuildResourceManager();
 }
-void CRenderer::Render(CGameScene* pGameScene)
+void CRenderer::Render(CGameScene* pGameScene, bool bDrawGizmo)
 {
 	CD3D12Device::ResetCommandAlloc();
 	CD3D12Device::TransitionResourceFromPresentToRenderTarget();
@@ -49,10 +49,8 @@ void CRenderer::UpdatePassCB(CGameScene* pGameScene)
 
 void CRenderer::UpdateMeshCB(CGameScene* pGameScene)
 {
-	const auto& pMeshes = pGameScene->GetMeshes();
 	UINT meshIndex = -1;
-
-	for (const auto& [name, meshes] : pMeshes) {
+	for (const auto& [name, meshes] : pGameScene->GetMeshes()) {
 		for (const auto& mesh : meshes) {
 			++meshIndex;
 			CD3DX12_GPU_DESCRIPTOR_HANDLE cd3dMeshGpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
@@ -67,24 +65,17 @@ void CRenderer::UpdateMeshCB(CGameScene* pGameScene)
 
 void CRenderer::BuildResourceManager()
 {
-	auto& resManager = CResourceManager::GetInstance();
+	m_pResourceManager = std::make_unique<CResourceManager>();
+
 	CD3D12Device::ResetCommandList();
-	resManager.InitBegin(m_pDevice.Get(), m_pCommandList.Get());
+	m_pResourceManager->InitBegin(m_pDevice.Get(), m_pCommandList.Get());
 	CD3D12Device::ExcuteCommandList();
 	CD3D12Device::WaitForGpuComplete();
-	resManager.InitEnd();
+	m_pResourceManager->InitEnd();
 }
 
-void CRenderer::BuildFrameResource(UINT nMesh, UINT nPass, UINT nFrame)
-{
-	for (UINT i = 0; i < nFrame; ++i) {
-		m_pFrameResources.push_back(std::make_unique<CFrameResource>(m_pDevice.Get(), nMesh, nPass));
-	}
-	m_pCurrFrameResource = m_pFrameResources[0].get();
-	m_nCurrFrameResourceIndex = 0;
-}
 
-void CRenderer::BuildConstantBufferViews(UINT nMesh, UINT nPass, UINT nFrame)
+void CRenderer::BuildConstantBufferViews(UINT nMesh, UINT nUI, UINT nPass)
 {
 	auto pDevice = m_pDevice.Get();
 
@@ -111,7 +102,7 @@ void CRenderer::BuildConstantBufferViews(UINT nMesh, UINT nPass, UINT nFrame)
 	m_pPassCBs = std::make_unique<CUploadBuffer<PassConstants>>(pDevice, nPass, true);
 	UINT nPassCbByteSize = ResourceHelper::CalcConstantBufferByteSize(sizeof(PassConstants));
 	auto pPassCB = m_pPassCBs->Resource();
-	for (UINT i = 0; i < nMesh; ++i) 
+	for (UINT i = 0; i < nPass; ++i)
 	{
 		D3D12_GPU_VIRTUAL_ADDRESS d3dCbAddress = pPassCB->GetGPUVirtualAddress();
 		int nHeapIndex = m_nPassOffset;
@@ -128,9 +119,8 @@ void CRenderer::BuildConstantBufferViews(UINT nMesh, UINT nPass, UINT nFrame)
 
 void CRenderer::RenderScene(CGameScene* pGameScene)
 {
-	auto& resManager = CResourceManager::GetInstance();
 	// 루트 시그니처
-	m_pCommandList->SetGraphicsRootSignature(resManager.LoadRootSig("Default"));
+	m_pCommandList->SetGraphicsRootSignature(m_pResourceManager->LoadRootSig("Default"));
 
 	// 뷰포트, 렉트
 	auto pCamera = pGameScene->GetCamera();
@@ -146,27 +136,27 @@ void CRenderer::RenderScene(CGameScene* pGameScene)
 	cd3dPassGpuHandle.Offset(m_nPassOffset, m_nCbvDescriptorSize);
 	m_pCommandList->SetGraphicsRootDescriptorTable(1, cd3dPassGpuHandle);
 
-	std::string currPsoName = "None";
-	std::string currMeshName = "None";
-	CMesh*		pCurrMesh = nullptr;
-	const auto& pMeshes = pGameScene->GetMeshes();
-	UINT		nMeshIndex = -1;
-	for (const auto& [psoName, meshes] : pMeshes) {
+	std::string		currPsoName = "None";
+	std::string		currMeshName = "None";
+	CBaseMesh*		pCurrMesh = nullptr;
+	UINT			nMeshIndex = -1;
+
+	for (const auto& [psoName, meshes] : pGameScene->GetMeshes()) {
 		if (currPsoName != psoName) {
-			m_pCommandList->SetPipelineState(resManager.LoadPSO(psoName));
+			m_pCommandList->SetPipelineState(m_pResourceManager->LoadPSO(psoName));
 			currPsoName = psoName;
 		}
 		
 		for (const auto& mesh : meshes) {
 			++nMeshIndex;
 			if (currMeshName != mesh->m_strMeshName) {
-				pCurrMesh = resManager.LoadMesh(mesh->m_strMeshName);
+				pCurrMesh = m_pResourceManager->LoadNewMesh(mesh->m_strMeshName);
 				currMeshName = mesh->m_strMeshName;
 			}
+			CD3DX12_GPU_DESCRIPTOR_HANDLE cd3dMeshGpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
+			cd3dMeshGpuHandle.Offset(nMeshIndex, m_nCbvDescriptorSize);
+			m_pCommandList->SetGraphicsRootDescriptorTable(0, cd3dMeshGpuHandle);
+			pCurrMesh->Render(m_pCommandList.Get());
 		}
-		CD3DX12_GPU_DESCRIPTOR_HANDLE cd3dMeshGpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
-		cd3dMeshGpuHandle.Offset(nMeshIndex, m_nCbvDescriptorSize);
-		m_pCommandList->SetGraphicsRootDescriptorTable(0, cd3dMeshGpuHandle);
-		pCurrMesh->Render(m_pCommandList.Get());
 	}
 }

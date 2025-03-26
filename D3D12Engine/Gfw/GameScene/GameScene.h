@@ -1,7 +1,10 @@
 ﻿#pragma once
-#include "GameObject.h"
+#include "Gfw/GameObject/GameObject.h"
 #include "Gfw/Camera/Camera.h"
 
+class UI {
+
+};
 class CGameScene {
 public:
 	CGameScene();
@@ -27,9 +30,11 @@ protected:
 private:
 	std::unique_ptr<CCamera>					m_pCamera;
 
-	std::vector<std::unique_ptr<CGameObject>> m_pNewObjects;
+	std::vector<std::unique_ptr<CGameObject>> m_pGameObjects;
 	std::unordered_map<std::string, std::vector<std::shared_ptr<CStaticMeshComponent>>> m_pMeshComps;
 
 	DirectX::XMFLOAT4	m_xmf4BgColor;
 	DirectX::XMFLOAT3	m_xmf3CameraPos;
+	DirectX::XMFLOAT3	m_xmf3CameraLookAt;
+
 };

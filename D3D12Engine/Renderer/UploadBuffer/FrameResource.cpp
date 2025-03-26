@@ -1,7 +1,7 @@
 ﻿#include "Common\pch.h"
 #include "FrameResource.h"
 
-CFrameResource::CFrameResource(ID3D12Device* pDevice, UINT nMesh, UINT nPass)
+CFrameResource::CFrameResource(ID3D12Device* pDevice, UINT nMesh, UINT nUI, UINT nPass)
 {
     pDevice->CreateCommandAllocator(
         D3D12_COMMAND_LIST_TYPE_DIRECT,

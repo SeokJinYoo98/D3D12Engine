@@ -274,12 +274,12 @@ void CD3D12Device::MoveToNextFrame()
 	}
 }
 
-void CD3D12Device::CreateCbvDescriptorHeap(UINT nMesh, UINT nPass, UINT nFrame)
+void CD3D12Device::CreateCbvDescriptorHeap(UINT nMesh, UINT nUI, UINT nPass)
 {
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
 	::ZeroMemory(&cbvHeapDesc, sizeof(cbvHeapDesc));
 
-	cbvHeapDesc.NumDescriptors = nMesh + nPass;
+	cbvHeapDesc.NumDescriptors = nMesh + nPass + nUI;
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	cbvHeapDesc.NodeMask = 0;

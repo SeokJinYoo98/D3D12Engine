@@ -4,6 +4,7 @@
 CStaticMeshComponent::CStaticMeshComponent()
 {
 	m_xmf4x4Local = Matrix4x4::Identity();
+	Scale(1.f, 1.f, 1.f);
 }
 
 DirectX::XMFLOAT4X4 CStaticMeshComponent::GetTransform() const

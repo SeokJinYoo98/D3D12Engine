@@ -1,12 +1,15 @@
 ﻿#pragma once
 
 struct MeshConstants {
+    DirectX::XMFLOAT4X4 xmf4x4World         = Matrix4x4::Identity();
+    DirectX::XMFLOAT4	xmf4Color           = { 0.0f, 0.0f, 0.0f, 1.0f };
+};
+struct UIConstants {
     DirectX::XMFLOAT4X4 xmf4x4World = Matrix4x4::Identity();
-    DirectX::XMFLOAT4	xmf4Color = { 0.0f, 0.0f, 0.0f, 1.0f };
 };
 struct PassConstants {
-    DirectX::XMFLOAT4X4 xmf4x4View = Matrix4x4::Identity();
-    DirectX::XMFLOAT4X4 xmf4x4Projection = Matrix4x4::Identity();
+    DirectX::XMFLOAT4X4 xmf4x4View          = Matrix4x4::Identity();
+    DirectX::XMFLOAT4X4 xmf4x4Projection    = Matrix4x4::Identity();
 };
 
 template<typename T>

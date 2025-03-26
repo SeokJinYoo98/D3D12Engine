@@ -3,8 +3,8 @@
 #include "Renderer/ResourceManager.h"
 #include "UploadBuffer/FrameResource.h"
 
+
 class CGameScene;
-class CCamera;
 
 class CRenderer : public CD3D12Device
 {
@@ -13,7 +13,7 @@ public:
 public:
 	void	InitRenderer(HWND hWnd, UINT nWidth, UINT nHeight);
 
-	void	Render(CGameScene* pGameScene);
+	void	Render(CGameScene* pGameScene, bool bDrawGizmo);
 	void	Update(CGameScene* pGameScene);
 
 private:
@@ -23,19 +23,17 @@ private:
 
 private:
 	void	BuildResourceManager();
-	void	BuildFrameResource(UINT nMesh, UINT nPass, UINT nFrame);
-	void	BuildConstantBufferViews(UINT nMesh, UINT nPass, UINT nFrame);
+	void	BuildConstantBufferViews(UINT nMesh, UINT nUI, UINT nPass);
 
 private:
-	std::unique_ptr<CUploadBuffer<MeshConstants>> m_pMeshCBs;
-	std::unique_ptr<CUploadBuffer<PassConstants>> m_pPassCBs;
+	std::unique_ptr<CResourceManager>				m_pResourceManager;
+	std::unique_ptr<CUploadBuffer<MeshConstants>>	m_pMeshCBs;
+	std::unique_ptr<CUploadBuffer<PassConstants>>	m_pPassCBs;
+	std::unique_ptr<CUploadBuffer<UIConstants>>		m_pUICBs;
 
-	std::vector<std::unique_ptr<CFrameResource>> m_pFrameResources;
-	CFrameResource* m_pCurrFrameResource = nullptr;
-	UINT m_nCurrFrameResourceIndex = -1;
-	
-	UINT m_nPassOffset = 0;
-	UINT m_nFrameResource = 3;
-	PassConstants m_mainPassCB;
+	UINT			m_nPassOffset	= 0;
+	UINT			m_nUIOffset		= 0;
+	PassConstants	m_mainPassCB	= { };
+
 };
 

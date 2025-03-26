@@ -1,6 +1,7 @@
 ﻿#include "Common\pch.h"
 #include "PSO.h"
 
+
 void CPSO::CreatePSO(ID3D12Device* pDevice, ID3D12RootSignature* pRootSig, ID3DBlob* pVS, ID3DBlob* pPS)
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineStateDesc{ };
@@ -23,6 +24,40 @@ void CPSO::CreatePSO(ID3D12Device* pDevice, ID3D12RootSignature* pRootSig, ID3DB
 		&d3dPipelineStateDesc,
 		IID_PPV_ARGS(m_pPSO.GetAddressOf())
 	);
+}
+
+void CPSO::CreateInputLayoutElements()
+{
+	m_vInputLayouts =
+	{
+		{
+			"POSITION",
+			0,
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			0,
+			0,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		},
+		{
+			"NORMAL",
+			0,
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			0,
+			12,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		},
+		{
+			"UV",
+			0,
+			DXGI_FORMAT_R32G32_FLOAT,
+			0,
+			24,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		}
+	};
 }
 
 D3D12_RASTERIZER_DESC CPSO::CreateRasterizerState()
@@ -89,29 +124,6 @@ D3D12_BLEND_DESC CPSO::CreateBlendState()
 	return d3dBlendDesc;
 }
 
-D3D12_INPUT_LAYOUT_DESC CPSO::CreateInputLayout()
-{
-	m_vInputLayouts =
-	{
-		{
-			"POSITION",
-			0,
-			DXGI_FORMAT_R32G32B32_FLOAT,
-			0,
-			0,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-			0
-		}
-	};
-
-	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
-	::ZeroMemory(&d3dInputLayoutDesc, sizeof(D3D12_INPUT_LAYOUT_DESC));
-	d3dInputLayoutDesc.pInputElementDescs = m_vInputLayouts.data();
-	d3dInputLayoutDesc.NumElements = static_cast<UINT>(m_vInputLayouts.size());
-
-	return d3dInputLayoutDesc;
-}
-
 D3D12_SHADER_BYTECODE CPSO::CreateShaderByteCode(ID3DBlob* pBlob)
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
@@ -122,20 +134,48 @@ D3D12_SHADER_BYTECODE CPSO::CreateShaderByteCode(ID3DBlob* pBlob)
 
 	return d3dShaderByteCode;
 }
-
-COpaquePSO::COpaquePSO(ID3D12Device* pDevice, ID3D12RootSignature* pRootSig, ID3DBlob* pVS, ID3DBlob* pPS)
+ 
+D3D12_INPUT_LAYOUT_DESC CPSO::CreateInputLayout()
 {
-	CPSO::CreatePSO(pDevice, pRootSig, pVS, pPS);
+	CreateInputLayoutElements();
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	::ZeroMemory(&d3dInputLayoutDesc, sizeof(D3D12_INPUT_LAYOUT_DESC));
+	d3dInputLayoutDesc.pInputElementDescs = m_vInputLayouts.data();
+	d3dInputLayoutDesc.NumElements = static_cast<UINT>(m_vInputLayouts.size());
+
+	return d3dInputLayoutDesc;
 }
 
-COpaqueLinePSO::COpaqueLinePSO(ID3D12Device* pDevice, ID3D12RootSignature* pRootSig, ID3DBlob* pVS, ID3DBlob* pPS)
-{
-	CPSO::CreatePSO(pDevice, pRootSig, pVS, pPS);
-}
-
+//
 D3D12_RASTERIZER_DESC COpaqueLinePSO::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC myRaster = CPSO::CreateRasterizerState();
 	myRaster.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	return myRaster;
+}
+
+void CDiffusedPSO::CreateInputLayoutElements()
+{
+	m_vInputLayouts =
+	{
+		{
+			"POSITION",										// Semantic
+			0,												// Semantic Index
+			DXGI_FORMAT_R32G32B32_FLOAT,					// 데이터 형식
+			0,												// 입력 슬롯 번호
+			0,												// 시작 바이트 오프셋
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,		// 데이터 분류 방식
+			0												// 인스턴스 데이터 스텝 레이트
+		},
+		{
+			"COLOR",
+			0,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			0,
+			12,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		}
+	};
 }

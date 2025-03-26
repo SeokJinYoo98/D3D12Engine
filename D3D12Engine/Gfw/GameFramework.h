@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "Gfw/App/D3DApp.h"
+#include "Gfw/GameScene/GameScene.h"
 #include "Renderer/Renderer.h"
-#include "GameScene.h"
+
 
 class CGameFramework : public CD3DApp {
 public:
@@ -28,5 +29,7 @@ private:
 	std::unique_ptr<CGameScene>		m_pGameScene;
 	std::unique_ptr<CRenderer>		m_pGameRenderer;
 
+private:
+	bool							m_bDrawWorldGizmo = false;
 };
 
