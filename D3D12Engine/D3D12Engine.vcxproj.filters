@@ -60,7 +60,7 @@
     <ClInclude Include="Renderer\RootSignature\RootSignature.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\Component\Component.h">
+    <ClInclude Include="Gfw\GameComponent\GameComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Shader\Shader.h">
@@ -82,6 +82,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Mesh\Polygon\Polygon.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfw\GamePlayer\GamePlayer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfw\GameTransform\GameTransform.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MyGame\TestScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfw\GamePhysics\GamePhysics.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,7 +137,7 @@
     <ClCompile Include="Renderer\RootSignature\RootSignature.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\Component\Component.cpp">
+    <ClCompile Include="Gfw\GameComponent\GameComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Shader\Shader.cpp">
@@ -147,6 +159,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Mesh\Polygon\Polygon.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfw\GamePlayer\GamePlayer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfw\GameTransform\GameTransform.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MyGame\TestScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfw\GamePhysics\GamePhysics.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

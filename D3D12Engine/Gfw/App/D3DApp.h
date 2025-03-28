@@ -31,9 +31,12 @@ protected:
 	virtual void				Update(float fElapsedTime) { }
 
 	// Convenience overrides for handling mouse input.
-	virtual void				OnMouseDown(WPARAM btnState, int x, int y)		{ }
+	virtual void				OnMouseDown(WPARAM btnState, int x, int y) {
+
+	}
 	virtual void				OnMouseUp(WPARAM btnState, int x, int y)		{ }
-	virtual void				OnMouseMove(WPARAM btnState, int x, int y)		{ }
+	virtual void				OnMouseMove(WPARAM btnState, int x, int y) {
+	}
 
 	virtual void				OnKeyboardDown(WPARAM wParam, LPARAM lParam);
 	virtual void				OnKeyboardUp(WPARAM wParam, LPARAM lParam);
@@ -60,6 +63,9 @@ protected:
 	CGameTimer					m_gameTimer			= { };
 	_TCHAR						m_pszFrameRate[50]	= { };
 
-	UCHAR m_keyState[256] = { };
+	UCHAR						m_keyState[256] = { };
+	POINT						m_prevMousePoint	= { };
+	POINT						m_deltaMousePoint	= { };
+	bool						m_bMouseLeftClicked = false;
 };
 

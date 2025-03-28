@@ -76,6 +76,9 @@ namespace Random {
 
 namespace Direction {
 	constexpr DirectX::XMFLOAT3 ORIGIN_POINT{ 0.0f, 0.0f, 0.0f };
+	constexpr DirectX::XMFLOAT3 AXIS_X	{ +1.0f, +0.0f, +0.0f };
+	constexpr DirectX::XMFLOAT3 AXIS_Y	{ +0.0f, +1.0f, +0.0f };
+	constexpr DirectX::XMFLOAT3 AXIS_Z	{ +0.0f, +0.0f, +1.0f };
 
 	constexpr DirectX::XMFLOAT3 UP		{ +0.0f, +1.0f, +0.0f };
 	constexpr DirectX::XMFLOAT3 DOWN	{ +0.0f, -1.0f, +0.0f };
@@ -153,6 +156,7 @@ namespace Vector3 {
 		if (bNormalize)
 			cross = DirectX::XMVector3Normalize(cross);
 		XMStoreFloat3(&xmf3Result, cross);
+		return xmf3Result;
 	}
 	inline DirectX::XMFLOAT3 Normalize(const DirectX::XMFLOAT3& xmf3Vector)
 	{
@@ -191,6 +195,7 @@ namespace Vector3 {
 	{
 		return TransformCoord(xmf3Vector, XMLoadFloat4x4(&xmmtx4x4Matrix));
 	}
+
 }
 
 namespace Vector4 {
@@ -275,10 +280,10 @@ namespace Matrix4x4
 	inline void PrintMatrix4x4(const DirectX::XMFLOAT4X4& xmmtx4x4Matrix, const std::string& name)
 	{
 		std::cout << name << std::endl;
-		std::cout << xmmtx4x4Matrix._11 << " " << xmmtx4x4Matrix._12 << " " << xmmtx4x4Matrix._13 << " " << xmmtx4x4Matrix._14 << std::endl;
-		std::cout << xmmtx4x4Matrix._21 << " " << xmmtx4x4Matrix._22 << " " << xmmtx4x4Matrix._23 << " " << xmmtx4x4Matrix._24 << std::endl;
-		std::cout << xmmtx4x4Matrix._31 << " " << xmmtx4x4Matrix._32 << " " << xmmtx4x4Matrix._33 << " " << xmmtx4x4Matrix._34 << std::endl;
-		std::cout << xmmtx4x4Matrix._41 << " " << xmmtx4x4Matrix._42 << " " << xmmtx4x4Matrix._43 << " " << xmmtx4x4Matrix._44 << std::endl;
+		std::cout << xmmtx4x4Matrix._11 << ", " << xmmtx4x4Matrix._12 << ", " << xmmtx4x4Matrix._13 << ", " << xmmtx4x4Matrix._14 << std::endl;
+		std::cout << xmmtx4x4Matrix._21 << ", " << xmmtx4x4Matrix._22 << ", " << xmmtx4x4Matrix._23 << ", " << xmmtx4x4Matrix._24 << std::endl;
+		std::cout << xmmtx4x4Matrix._31 << ", " << xmmtx4x4Matrix._32 << ", " << xmmtx4x4Matrix._33 << ", " << xmmtx4x4Matrix._34 << std::endl;
+		std::cout << xmmtx4x4Matrix._41 << ", " << xmmtx4x4Matrix._42 << ", " << xmmtx4x4Matrix._43 << ", " << xmmtx4x4Matrix._44 << std::endl;
 	}
 
 	inline DirectX::XMFLOAT4X4 PerspectiveFovLH(float FovAngleY, float AspectRatio, float NearZ, float FarZ)
@@ -295,6 +300,26 @@ namespace Matrix4x4
 			XMLoadFloat3(&xmf3LookAtPosition), 
 			XMLoadFloat3(&xmf3UpDirection)));
 		return xmmtx4x4Result;
+	}
+	inline DirectX::XMFLOAT3 GetPosition(const DirectX::XMFLOAT4X4& xmf4x4transform)
+	{
+		return DirectX::XMFLOAT3(xmf4x4transform._41, xmf4x4transform._42, xmf4x4transform._43);
+	}
+	inline DirectX::XMFLOAT3 GetForwardVector(const DirectX::XMFLOAT4X4& xmf4x4transform, bool bNormalize = true)
+	{
+		DirectX::XMFLOAT3 xmf3Forward(xmf4x4transform._31, xmf4x4transform._32, xmf4x4transform._33);
+		if (bNormalize)
+			xmf3Forward = Vector3::Normalize(xmf3Forward);
+
+		return xmf3Forward;
+	}
+	inline DirectX::XMFLOAT3 GetRightVector(const DirectX::XMFLOAT4X4& xmf4x4transform, bool bNormalize = true)
+	{
+		DirectX::XMFLOAT3 xmf3Right(xmf4x4transform._11, xmf4x4transform._21, xmf4x4transform._31);
+		if (bNormalize)
+			xmf3Right = Vector3::Normalize(xmf3Right);
+
+		return xmf3Right;
 	}
 }
 

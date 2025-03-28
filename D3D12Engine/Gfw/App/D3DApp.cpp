@@ -167,8 +167,8 @@ LRESULT CD3DApp::MsgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         // Catch this message so to prevent the window from becoming too small.
     case WM_GETMINMAXINFO:
-        ((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
-        ((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
+        ((MINMAXINFO*)lParam)->ptMinTrackSize.x = 800;
+        ((MINMAXINFO*)lParam)->ptMinTrackSize.y = 600;
         return 0;
 
     case WM_KEYDOWN:
@@ -213,7 +213,11 @@ void CD3DApp::FrameAdvance(float fElapsedTime)
 void CD3DApp::CalculateFrameRate()
 {
     m_gameTimer.GetFrameRate(m_pszFrameRate + 9, 40);
-    ::SetWindowText(m_hWnd, m_pszFrameRate);
+
+    _TCHAR szBuffer[128];
+    ::_stprintf_s(szBuffer, 128, _T("%s | (%dx%d)"), m_pszFrameRate, m_nClientWidth, m_nClientHeight);
+
+    ::SetWindowText(m_hWnd, szBuffer);
 }
 
 BOOL CD3DApp::InitWindow(HINSTANCE hInstance, int nCmdShow, UINT nWidth, UINT nHeight)
@@ -241,8 +245,8 @@ BOOL CD3DApp::InitWindow(HINSTANCE hInstance, int nCmdShow, UINT nWidth, UINT nH
         WS_OVERLAPPEDWINDOW,    // 창 스타일
         CW_USEDEFAULT,          // X 좌표
         CW_USEDEFAULT,          // Y 좌표
-        m_nClientWidth,         // 너비
-        m_nClientHeight,        // 높이
+        rc.right - rc.left,     // 너비
+        rc.bottom - rc.top,     // 높이
         nullptr,                // 부모 창
         nullptr,                // 메뉴
         m_hInstance,            // 인스턴스 핸들

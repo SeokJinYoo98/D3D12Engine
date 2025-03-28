@@ -22,6 +22,6 @@ int APIENTRY wWinMain(
     CreateConsoleWindow();
     CGameFramework D3D;
     D3D.InitGame(hInstance, nCmdShow, 800, 600);
-  
+   // D3D.StartScene(std::make_unique<CGameScene>());
     return D3D.Run();
 }

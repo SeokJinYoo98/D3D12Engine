@@ -1,10 +1,9 @@
 ﻿#pragma once
-#include "Gfw/GameObject/GameObject.h"
+#include "Gfw/GamePlayer/GamePlayer.h"
 #include "Gfw/Camera/Camera.h"
 
-class UI {
+class CGamePlayer;
 
-};
 class CGameScene {
 public:
 	CGameScene();
@@ -20,21 +19,20 @@ public:
 
 	virtual void ReleaseObjcets() { };
 
+	const DirectX::XMFLOAT4& GetBgColor() const { return m_xmf4BgColor; }
 	CCamera*	 GetCamera() { return m_pCamera.get(); }
 	const std::unordered_map<std::string, std::vector<std::shared_ptr<CStaticMeshComponent>>>& GetMeshes() { return m_pMeshComps; }
-	const DirectX::XMFLOAT4& GetBgColor() const { return m_xmf4BgColor; }
-
+	
 protected:
 	virtual void BuildObjects();
 	virtual void BuildCameras(UINT nWidth, UINT nHeight);
-private:
-	std::unique_ptr<CCamera>					m_pCamera;
+
+protected:
+	std::shared_ptr<CCamera>					m_pCamera;
 
 	std::vector<std::unique_ptr<CGameObject>> m_pGameObjects;
 	std::unordered_map<std::string, std::vector<std::shared_ptr<CStaticMeshComponent>>> m_pMeshComps;
 
 	DirectX::XMFLOAT4	m_xmf4BgColor;
-	DirectX::XMFLOAT3	m_xmf3CameraPos;
-	DirectX::XMFLOAT3	m_xmf3CameraLookAt;
-
+	CGamePlayer*		m_pGamePlayer = nullptr;
 };

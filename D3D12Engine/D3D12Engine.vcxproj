@@ -137,11 +137,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Gfw\GamePhysics\GamePhysics.h" />
     <ClInclude Include="Common\AssetLoader\ObjModelLoader.h" />
+    <ClInclude Include="Gfw\GameTransform\GameTransform.h" />
+    <ClInclude Include="Gfw\GamePlayer\GamePlayer.h" />
     <ClInclude Include="Renderer\Mesh\Polygon\Polygon.h" />
     <ClInclude Include="Renderer\Mesh\Polygon\PolygonGenerator.h" />
     <ClInclude Include="Renderer\UploadBuffer\FrameResource.h" />
-    <ClInclude Include="Gfw\Component\Component.h" />
+    <ClInclude Include="Gfw\GameComponent\GameComponent.h" />
     <ClInclude Include="Renderer\PSO\PSO.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Renderer\D3D12Device\D3D12Device.h" />
@@ -159,13 +162,17 @@
     <ClInclude Include="Common\targetver.h" />
     <ClInclude Include="Renderer\RootSignature\RootSignature.h" />
     <ClInclude Include="Renderer\UploadBuffer\UploadBuffer.h" />
+    <ClInclude Include="MyGame\TestScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Gfw\GamePhysics\GamePhysics.cpp" />
     <ClCompile Include="Common\AssetLoader\ObjModelLoader.cpp" />
+    <ClCompile Include="Gfw\GameTransform\GameTransform.cpp" />
+    <ClCompile Include="Gfw\GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="Renderer\Mesh\Polygon\Polygon.cpp" />
     <ClCompile Include="Renderer\Mesh\Polygon\PolygonGenerator.cpp" />
     <ClCompile Include="Renderer\UploadBuffer\FrameResource.cpp" />
-    <ClCompile Include="Gfw\Component\Component.cpp" />
+    <ClCompile Include="Gfw\GameComponent\GameComponent.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="Renderer\PSO\PSO.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
@@ -189,6 +196,7 @@
     <ClCompile Include="Renderer\RootSignature\RootSignature.cpp" />
     <ClCompile Include="Renderer\Shader\Shader.cpp" />
     <ClCompile Include="Renderer\UploadBuffer\UploadBuffer.cpp" />
+    <ClCompile Include="MyGame\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\D3D12Engine.rc" />

@@ -13,17 +13,19 @@ public:
 public:
 	void	InitRenderer(HWND hWnd, UINT nWidth, UINT nHeight);
 
-	void	Render(CGameScene* pGameScene, bool bDrawGizmo);
+	void	Render(CGameScene* pGameScene, bool bDrawGrid);
 	void	Update(CGameScene* pGameScene);
 
 private:
 	void	UpdatePassCB(CGameScene* pGameScene);
 	void	UpdateMeshCB(CGameScene* pGameScene);
+	void	UpdateUICB();
 	void	RenderScene(CGameScene* pGameScene);
-
+	void	DrawGrid(bool bDrawGrid);
 private:
 	void	BuildResourceManager();
 	void	BuildConstantBufferViews(UINT nMesh, UINT nUI, UINT nPass);
+	void	BuildGrid();
 
 private:
 	std::unique_ptr<CResourceManager>				m_pResourceManager;
@@ -31,9 +33,11 @@ private:
 	std::unique_ptr<CUploadBuffer<PassConstants>>	m_pPassCBs;
 	std::unique_ptr<CUploadBuffer<UIConstants>>		m_pUICBs;
 
-	UINT			m_nPassOffset	= 0;
-	UINT			m_nUIOffset		= 0;
-	PassConstants	m_mainPassCB	= { };
-
+	UINT					m_nMeshOffset	= 0;
+	UINT					m_nPassOffset	= 0;
+	PassConstants			m_mainPassCB	= { };
+	
+	UINT					m_nUIOffset = 0;
+	std::array<MeshConstants, 3> m_gridConstants;
 };
 

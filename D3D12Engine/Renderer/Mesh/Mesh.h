@@ -3,6 +3,7 @@ struct Polygons;
 
 class CBaseMesh {
 public:
+	CBaseMesh() = default;
 	CBaseMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, Polygons* pNewPoly, D3D12_PRIMITIVE_TOPOLOGY d3dTopo= D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	void Render(ID3D12GraphicsCommandList* pCommandList);
@@ -19,10 +20,10 @@ public:
 		// DirectX::BoundingBox Bounds;
 	};
 protected:
-	void CreateMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, Polygons* pNewPoly);
-	virtual void CreateSubMeshes(Polygons* pNewPoly);
-	virtual void CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, Polygons* pNewPoly);
-	virtual void CreateIndexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList,  Polygons* pNewPoly);
+	void			CreateMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, Polygons* pNewPoly);
+	virtual void	CreateSubMeshes(Polygons* pNewPoly);
+	virtual void	CreateVertexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList, Polygons* pNewPoly);
+	virtual void	CreateIndexBuffer(ID3D12Device* pDevice, ID3D12GraphicsCommandList* pCommandList,  Polygons* pNewPoly);
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D12Resource>				m_pVertexBuffer;
@@ -42,5 +43,5 @@ protected:
 
 	D3D12_VERTEX_BUFFER_VIEW	m_d3dVertexBufferView	= { };
 	D3D12_INDEX_BUFFER_VIEW		m_d3dIndexBufferView	= { };
-	D3D12_PRIMITIVE_TOPOLOGY	m_d3dPrimitiveTopology;
+	D3D12_PRIMITIVE_TOPOLOGY	m_d3dPrimitiveTopology	= { };
 };

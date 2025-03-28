@@ -89,6 +89,7 @@ std::unique_ptr<Polygons> CPolygonGenerator::GenFromObjModel(const std::string& 
 
 	return std::move(newPoly);
 }
+
 UINT CPolygonGenerator::CalcVertexStride(bool bNorm, bool bUV)
 {
 	UINT vertexStride = sizeof(DirectX::XMFLOAT3);

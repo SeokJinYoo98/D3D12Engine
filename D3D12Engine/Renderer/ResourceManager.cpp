@@ -12,14 +12,15 @@ void CResourceManager::InitBegin(ID3D12Device* pDevice, ID3D12GraphicsCommandLis
 
 void CResourceManager::InitEnd()
 {
-	for (auto& [name, mesh] : m_newMeshMap)
+	for (auto& [name, mesh] : m_meshMap)
 		mesh->ReleaseUploadBuffers();
+	m_shaderMap.clear();
 }
 
-CBaseMesh* CResourceManager::LoadNewMesh(const std::string& meshName)
+CBaseMesh* CResourceManager::LoadMesh(const std::string& meshName)
 {
-	auto it = m_newMeshMap.find(meshName);
-	if (it == m_newMeshMap.end())
+	auto it = m_meshMap.find(meshName);
+	if (it == m_meshMap.end())
 		return nullptr;
 	return it->second.get();
 }
@@ -50,9 +51,22 @@ void CResourceManager::BuildMesh(ID3D12Device* pDevice, ID3D12GraphicsCommandLis
 {
 	CPolygonGenerator polyGen;
 	auto CubePolygon = polyGen.GenFromObjModel("Cube");
-	m_newMeshMap["Cube"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, CubePolygon.get());
+	m_meshMap["Cube"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, CubePolygon.get());
+
 	auto TankPolygon = polyGen.GenFromObjModel("tank");
-	m_newMeshMap["Tank"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, TankPolygon.get());
+	m_meshMap["Tank"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, TankPolygon.get());
+
+	auto ConePolygon = polyGen.GenFromObjModel("Cone");
+	m_meshMap["Cone"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, ConePolygon.get());
+
+	auto CylinderPolygon = polyGen.GenFromObjModel("Cylinder");
+	m_meshMap["Cylinder"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, CylinderPolygon.get());
+
+	auto IcoSpherePolygon = polyGen.GenFromObjModel("IcoSphere");
+	m_meshMap["IcoSphere"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, IcoSpherePolygon.get());
+
+	auto MonkeyPolygon = polyGen.GenFromObjModel("Monkey");
+	m_meshMap["Monkey"] = std::make_unique<CBaseMesh>(pDevice, pCommandList, MonkeyPolygon.get());
 }
 
 void CResourceManager::BuildShader(ID3D12Device* pDevice)

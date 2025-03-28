@@ -12,6 +12,7 @@ public:
 	~CGameFramework() { }
 public:
 	virtual void InitGame(HINSTANCE hInstance, int nCmdShow, UINT nWidth = 800, UINT nHeight = 600);
+	virtual void StartScene(std::unique_ptr<CGameScene> pNewScene);
 
 private:
 	void OnResize() override;
@@ -30,6 +31,6 @@ private:
 	std::unique_ptr<CRenderer>		m_pGameRenderer;
 
 private:
-	bool							m_bDrawWorldGizmo = false;
+	bool							m_bDrawWorldGrid = true;
 };
 

@@ -7,21 +7,23 @@ CRenderer::CRenderer()
 }
 void CRenderer::InitRenderer(HWND hWnd, UINT nWidth, UINT nHeight)
 {
-	UINT nMesh = 5, nPass = 1, nUI = 0;
+	UINT nMesh = 100, nPass = 1, nUI = 0;
 
 	CD3D12Device::InitDevice(hWnd, nWidth, nHeight);
 	CD3D12Device::CreateCbvDescriptorHeap(nMesh, nUI, nPass);
 	BuildConstantBufferViews(nMesh, nUI, nPass);
+	BuildGrid();
 
 	BuildResourceManager();
 }
-void CRenderer::Render(CGameScene* pGameScene, bool bDrawGizmo)
+void CRenderer::Render(CGameScene* pGameScene, bool bDrawGrid)
 {
 	CD3D12Device::ResetCommandAlloc();
 	CD3D12Device::TransitionResourceFromPresentToRenderTarget();
 	CD3D12Device::ClearRenderTargetAndDepthStencil(pGameScene->GetBgColor());
 
 	RenderScene(pGameScene);
+	DrawGrid(bDrawGrid);
 
 	CD3D12Device::TransitionRenderTargetToPresent();
 	CD3D12Device::ExcuteCommandList();
@@ -34,12 +36,10 @@ void CRenderer::Update(CGameScene* pGameScene)
 {
 	UpdatePassCB(pGameScene);
 	UpdateMeshCB(pGameScene);
+	UpdateUICB();
 }
 void CRenderer::UpdatePassCB(CGameScene* pGameScene)
 {
-	CD3DX12_GPU_DESCRIPTOR_HANDLE cd3dMeshGpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
-	cd3dMeshGpuHandle.Offset(m_nPassOffset, m_nCbvDescriptorSize);
-
 	auto camera = pGameScene->GetCamera();
 	m_mainPassCB.xmf4x4Projection	= Matrix4x4::Transpose(camera->GetProj());
 	m_mainPassCB.xmf4x4View			= Matrix4x4::Transpose(camera->GetView());
@@ -49,18 +49,23 @@ void CRenderer::UpdatePassCB(CGameScene* pGameScene)
 
 void CRenderer::UpdateMeshCB(CGameScene* pGameScene)
 {
-	UINT meshIndex = -1;
+	UINT meshIndex = m_nMeshOffset;
 	for (const auto& [name, meshes] : pGameScene->GetMeshes()) {
 		for (const auto& mesh : meshes) {
 			++meshIndex;
-			CD3DX12_GPU_DESCRIPTOR_HANDLE cd3dMeshGpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
-			cd3dMeshGpuHandle.Offset(meshIndex, m_nCbvDescriptorSize);
 			MeshConstants meshConst;
 			meshConst.xmf4Color = mesh->GetColor();
 			meshConst.xmf4x4World = Matrix4x4::Transpose(mesh->GetTransform());
 			m_pMeshCBs->CopyData(meshIndex, meshConst);
 		}
 	}
+	m_nUIOffset = meshIndex + 1;
+}
+
+void CRenderer::UpdateUICB()
+{
+	MeshConstants meshConst;
+
 }
 
 void CRenderer::BuildResourceManager()
@@ -116,6 +121,40 @@ void CRenderer::BuildConstantBufferViews(UINT nMesh, UINT nUI, UINT nPass)
 	}
 }
 
+void CRenderer::BuildGrid()
+{
+	DirectX::XMFLOAT3 xmf3Scale{ 0.05f, 0.05f, 100.f };
+	// x축
+	m_gridConstants[0].xmf4Color	= Vector4::StoreFloat4(DirectX::Colors::Red);
+	m_gridConstants[0].xmf4x4World	= Matrix4x4::Identity();
+	auto mtxRotate = DirectX::XMMatrixRotationAxis(DirectX::XMVECTOR{0.f, 1.f, 0.f}, DirectX::XMConvertToRadians(90.f));
+	m_gridConstants[0].xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_gridConstants[0].xmf4x4World);
+	auto scale = DirectX::XMMatrixScaling(xmf3Scale.x, xmf3Scale.y, xmf3Scale.z);
+	m_gridConstants[0].xmf4x4World = Matrix4x4::Multiply(scale, m_gridConstants[0].xmf4x4World);
+
+	// z축
+	m_gridConstants[1].xmf4Color = Vector4::StoreFloat4(DirectX::Colors::Blue);
+	m_gridConstants[1].xmf4x4World = Matrix4x4::Identity();
+	mtxRotate = DirectX::XMMatrixRotationAxis(DirectX::XMVECTOR{ 0.f, 0.f, 1.f }, DirectX::XMConvertToRadians(90.f));
+	m_gridConstants[1].xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_gridConstants[1].xmf4x4World);
+	scale = DirectX::XMMatrixScaling(xmf3Scale.x, xmf3Scale.y, xmf3Scale.z);
+	m_gridConstants[1].xmf4x4World = Matrix4x4::Multiply(scale, m_gridConstants[1].xmf4x4World);
+
+	// y축
+	m_gridConstants[2].xmf4Color = Vector4::StoreFloat4(DirectX::Colors::Green);
+	m_gridConstants[2].xmf4x4World = Matrix4x4::Identity();
+	mtxRotate = DirectX::XMMatrixRotationAxis(DirectX::XMVECTOR{ 1.f, 0.f, 0.f }, DirectX::XMConvertToRadians(90.f));
+	m_gridConstants[2].xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_gridConstants[2].xmf4x4World);
+	scale = DirectX::XMMatrixScaling(xmf3Scale.x, xmf3Scale.y, xmf3Scale.z);
+	m_gridConstants[2].xmf4x4World = Matrix4x4::Multiply(scale, m_gridConstants[2].xmf4x4World);
+
+	for (size_t i = 0; i < m_gridConstants.size(); ++i) {
+		m_gridConstants[i].xmf4x4World = Matrix4x4::Transpose(m_gridConstants[i].xmf4x4World);
+		m_pMeshCBs->CopyData((int)i, m_gridConstants[i]);
+	}
+	m_nMeshOffset = 2;
+}
+
 
 void CRenderer::RenderScene(CGameScene* pGameScene)
 {
@@ -139,7 +178,7 @@ void CRenderer::RenderScene(CGameScene* pGameScene)
 	std::string		currPsoName = "None";
 	std::string		currMeshName = "None";
 	CBaseMesh*		pCurrMesh = nullptr;
-	UINT			nMeshIndex = -1;
+	UINT			nMeshIndex = m_nMeshOffset;
 
 	for (const auto& [psoName, meshes] : pGameScene->GetMeshes()) {
 		if (currPsoName != psoName) {
@@ -150,7 +189,7 @@ void CRenderer::RenderScene(CGameScene* pGameScene)
 		for (const auto& mesh : meshes) {
 			++nMeshIndex;
 			if (currMeshName != mesh->m_strMeshName) {
-				pCurrMesh = m_pResourceManager->LoadNewMesh(mesh->m_strMeshName);
+				pCurrMesh = m_pResourceManager->LoadMesh(mesh->m_strMeshName);
 				currMeshName = mesh->m_strMeshName;
 			}
 			CD3DX12_GPU_DESCRIPTOR_HANDLE cd3dMeshGpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
@@ -160,3 +199,17 @@ void CRenderer::RenderScene(CGameScene* pGameScene)
 		}
 	}
 }
+
+void CRenderer::DrawGrid(bool bDrawGrid)
+{
+	if (!bDrawGrid) return;
+	auto mesh = m_pResourceManager->LoadMesh("Cube");
+	m_pCommandList->SetPipelineState(m_pResourceManager->LoadPSO("Opaque"));
+	for (size_t i = 0; i < m_gridConstants.size(); ++i) {
+		CD3DX12_GPU_DESCRIPTOR_HANDLE cd3dMeshGpuHandle(m_pCbvHeap->GetGPUDescriptorHandleForHeapStart());
+		cd3dMeshGpuHandle.Offset((UINT)i, m_nCbvDescriptorSize);
+		m_pCommandList->SetGraphicsRootDescriptorTable(0, cd3dMeshGpuHandle);
+		mesh->Render(m_pCommandList.Get());
+	}
+}
+

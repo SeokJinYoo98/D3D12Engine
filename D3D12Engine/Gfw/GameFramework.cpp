@@ -14,6 +14,12 @@ void CGameFramework::InitGame(HINSTANCE hInstance, int nCmdShow, UINT nWidth, UI
 	m_gameTimer.Reset();
 }
 
+void CGameFramework::StartScene(std::unique_ptr<CGameScene> pNewScene)
+{
+	m_pGameScene = std::move(pNewScene);
+	BuildScene();
+}
+
 void CGameFramework::OnResize()
 {
 	CD3DApp::OnResize();
@@ -31,9 +37,6 @@ void CGameFramework::OnDestroy()
 }
 void CGameFramework::ProcessInput(float fElapsedTime)
 {
-	if (m_keyState) {
-
-	}
 	if (m_pGameScene)
 		m_pGameScene->ProcessInput(m_keyState, fElapsedTime);
 }
@@ -50,7 +53,7 @@ void CGameFramework::Render(float fElapsedTime)
 {
 	if (m_pGameScene)
 	{
-		m_pGameRenderer->Render(m_pGameScene.get(), m_bDrawWorldGizmo);
+		m_pGameRenderer->Render(m_pGameScene.get(), m_bDrawWorldGrid);
 	}
 }
 

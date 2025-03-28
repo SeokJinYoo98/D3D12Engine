@@ -17,6 +17,10 @@ public:
 	virtual void Update(float fElapsedTime);
 	virtual void Render();
 
+	void SetCameraPos(const DirectX::XMFLOAT3& xmf3Pos);
+	void SetCameraLookAt(const DirectX::XMFLOAT3& xmf3LookAt);
+	void SetCameraUp(const DirectX::XMFLOAT3& xmf3Up);
+
 	void OnResize(const RECT& rcClient);
 	void GenerateViewMatrix(const DirectX::XMFLOAT3& xmf3Pos, const DirectX::XMFLOAT3& xmf3LookAt, const DirectX::XMFLOAT3& xmf3Up);
 	void GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFovAngle);
@@ -29,7 +33,6 @@ public:
 	const DirectX::XMFLOAT4X4& GetView()	 const { return m_xmf4x4View; }
 	const DirectX::XMFLOAT4X4& GetProj()	 const { return m_xmf4x4Projection; }
 public:
-	std::shared_ptr<CGameShader> m_pShader;
 
 protected:
 	DirectX::XMFLOAT4X4 m_xmf4x4View = { };
@@ -46,5 +49,7 @@ protected:
 	float m_fFarPlane = 100.f;
 	float m_fRatio = 0.f;
 	float m_fFov = 45.f;
+
+	bool m_bDirty = false;
 };
 

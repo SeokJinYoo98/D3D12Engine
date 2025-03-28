@@ -1,28 +1,19 @@
 ﻿#pragma once
-#include "Gfw/Component/Component.h"
+#include "Gfw/GameComponent/GameComponent.h"
+#include "Gfw/GameTransform/GameTransform.h"
 
 class CGameObject {
 public:
 	CGameObject();
 
+public:
+	void AddMeshComponent(const std::string& meshName, std::shared_ptr<CStaticMeshComponent> pMesh);
 	virtual void Update(float fElapsedTime);
 
+	std::shared_ptr<CGameTransform> m_pGameTransform;
 protected:
 	virtual void UpdateMeshes(float fElapsedTime);
 
-public:
-	void Rotate(float x, float y, float z, float fAngle);
-	void Move(float x, float y, float z);
-	void Scale(float x, float y, float z);
-	void Rotate(const DirectX::XMFLOAT3& xmf3Axis, float fAngle);
-	void Move(const DirectX::XMFLOAT3& xmf3Pos);
-	void Scale(const DirectX::XMFLOAT3& xmf3Scale);
-
-public:
-	void AddMeshComponent(std::shared_ptr<CStaticMeshComponent> pMesh);
-	const DirectX::XMFLOAT4X4& GetWorld() { return m_xmf4x4World; }
-
 protected:
-	DirectX::XMFLOAT4X4 m_xmf4x4World;
-	std::vector<std::shared_ptr<CStaticMeshComponent>> m_pMeshes;
+	std::unordered_map<std::string, std::shared_ptr<CStaticMeshComponent>>	m_pMeshes;
 };

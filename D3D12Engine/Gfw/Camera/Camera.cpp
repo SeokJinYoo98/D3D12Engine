@@ -33,11 +33,32 @@ void CCamera::SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom)
 
 void CCamera::Update(float fElapsedTime)
 {
-
+	if (m_bDirty) {
+		GenerateViewMatrix(m_xmf3Pos, m_xmf3LookAt, m_xmf3Up);
+		m_bDirty = false;
+	}
 }
 
 void CCamera::Render()
 {
+}
+
+void CCamera::SetCameraPos(const DirectX::XMFLOAT3& xmf3Pos)
+{
+	m_xmf3Pos = xmf3Pos;
+	if (!m_bDirty) m_bDirty = true;
+}
+
+void CCamera::SetCameraLookAt(const DirectX::XMFLOAT3& xmf3LookAt)
+{
+	m_xmf3LookAt = xmf3LookAt;
+	if (!m_bDirty) m_bDirty = true;
+}
+
+void CCamera::SetCameraUp(const DirectX::XMFLOAT3& xmf3Up)
+{
+	m_xmf3Up = xmf3Up;
+	if (!m_bDirty) m_bDirty = true;
 }
 
 void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFovAngle)

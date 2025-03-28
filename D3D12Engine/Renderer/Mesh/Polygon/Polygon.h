@@ -30,3 +30,14 @@ struct Polygons
 	std::vector<SubPolygon> SubPolygons;
 };
 
+struct DiffusedPolygon 
+{
+	UINT			VertexStride = 0;
+	UINT			VertexCount = 0;
+
+	DXGI_FORMAT		IndexFormat = DXGI_FORMAT_R16_UINT;
+	UINT			IndexCount = 0;
+
+	std::vector<float> Vertices;
+	std::vector<uint16_t>	Indices16;
+};
