@@ -25,8 +25,7 @@ public:
 	void TurnDown(float fDelta);
 private:
 	std::shared_ptr<CCamera> m_pCamera = nullptr;
-
 	float m_fMoveSpeed = 10.f;
-	float m_fRotateSpeed = 1.f;
+	float m_fRotateSpeed = 2.f;
 };
 

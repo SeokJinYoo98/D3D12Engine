@@ -46,6 +46,7 @@ constexpr int FRAME_BUFFER_HEIGHT = 600;
 
 extern bool CONSOLE_MESSAGE;
 
+constexpr int MAX_LIGHTS = 16;
 
 namespace Random {
 	class Generator {

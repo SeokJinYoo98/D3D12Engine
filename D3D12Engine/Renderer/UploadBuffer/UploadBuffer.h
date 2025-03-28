@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Gfw/GameLight/GameLight.h"
+
 
 struct MeshConstants {
     DirectX::XMFLOAT4X4 xmf4x4World         = Matrix4x4::Identity();
@@ -10,6 +12,10 @@ struct UIConstants {
 struct PassConstants {
     DirectX::XMFLOAT4X4 xmf4x4View          = Matrix4x4::Identity();
     DirectX::XMFLOAT4X4 xmf4x4Projection    = Matrix4x4::Identity();
+    DirectX::XMFLOAT3   xmf3EyePosition;
+    float               padding;
+    DirectX::XMFLOAT4   xmf4AmbientLight;
+    Light               light;
 };
 
 template<typename T>

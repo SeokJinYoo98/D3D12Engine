@@ -43,6 +43,10 @@ void CRenderer::UpdatePassCB(CGameScene* pGameScene)
 	auto camera = pGameScene->GetCamera();
 	m_mainPassCB.xmf4x4Projection	= Matrix4x4::Transpose(camera->GetProj());
 	m_mainPassCB.xmf4x4View			= Matrix4x4::Transpose(camera->GetView());
+	m_mainPassCB.xmf3EyePosition	= camera->GetEyePos();
+	m_mainPassCB.xmf4AmbientLight	= pGameScene->GetAmbientLight();
+	const auto& lights = pGameScene->GetLights();
+	m_mainPassCB.light = lights[0]->GetLightData();
 
 	m_pPassCBs->CopyData(0, m_mainPassCB);
 }
@@ -125,7 +129,7 @@ void CRenderer::BuildGrid()
 {
 	DirectX::XMFLOAT3 xmf3Scale{ 0.05f, 0.05f, 100.f };
 	// x축
-	m_gridConstants[0].xmf4Color	= Vector4::StoreFloat4(DirectX::Colors::Red);
+	m_gridConstants[0].xmf4Color	= DirectX::XMFLOAT4(10.f, 0.f, 0.f, 1.f);
 	m_gridConstants[0].xmf4x4World	= Matrix4x4::Identity();
 	auto mtxRotate = DirectX::XMMatrixRotationAxis(DirectX::XMVECTOR{0.f, 1.f, 0.f}, DirectX::XMConvertToRadians(90.f));
 	m_gridConstants[0].xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_gridConstants[0].xmf4x4World);
@@ -133,7 +137,7 @@ void CRenderer::BuildGrid()
 	m_gridConstants[0].xmf4x4World = Matrix4x4::Multiply(scale, m_gridConstants[0].xmf4x4World);
 
 	// z축
-	m_gridConstants[1].xmf4Color = Vector4::StoreFloat4(DirectX::Colors::Blue);
+	m_gridConstants[1].xmf4Color = DirectX::XMFLOAT4(0.f, 0.f, 10.f, 1.f);
 	m_gridConstants[1].xmf4x4World = Matrix4x4::Identity();
 	mtxRotate = DirectX::XMMatrixRotationAxis(DirectX::XMVECTOR{ 0.f, 0.f, 1.f }, DirectX::XMConvertToRadians(90.f));
 	m_gridConstants[1].xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_gridConstants[1].xmf4x4World);
@@ -141,7 +145,7 @@ void CRenderer::BuildGrid()
 	m_gridConstants[1].xmf4x4World = Matrix4x4::Multiply(scale, m_gridConstants[1].xmf4x4World);
 
 	// y축
-	m_gridConstants[2].xmf4Color = Vector4::StoreFloat4(DirectX::Colors::Green);
+	m_gridConstants[2].xmf4Color = DirectX::XMFLOAT4(0.f, 10.f, 0.f, 1.f);
 	m_gridConstants[2].xmf4x4World = Matrix4x4::Identity();
 	mtxRotate = DirectX::XMMatrixRotationAxis(DirectX::XMVECTOR{ 1.f, 0.f, 0.f }, DirectX::XMConvertToRadians(90.f));
 	m_gridConstants[2].xmf4x4World = Matrix4x4::Multiply(mtxRotate, m_gridConstants[2].xmf4x4World);

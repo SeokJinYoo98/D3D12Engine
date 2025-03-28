@@ -11,7 +11,7 @@ void CShader::CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderNa
 	Microsoft::WRL::ComPtr<ID3DBlob> pErrorBlob;
 
 	HRESULT hResult = ::D3DCompileFromFile(
-		pszFileName, nullptr, nullptr,
+		pszFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		pszShaderName, pszShaderProfile,
 		nComPileFlags, 0, m_pShaderBlob.GetAddressOf(), pErrorBlob.GetAddressOf()
 	);
@@ -23,7 +23,7 @@ void CShader::CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderNa
 			::OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
 			std::cout << (char*)pErrorBlob->GetBufferPointer() << std::endl;
 		}
-		// 에러 처리 또는 함수 종료
+
 		throw std::runtime_error("Shader compilation failed.");
 	}
 }

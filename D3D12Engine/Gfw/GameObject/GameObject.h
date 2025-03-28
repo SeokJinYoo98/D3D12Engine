@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "Gfw/GameComponent/GameComponent.h"
-#include "Gfw/GameTransform/GameTransform.h"
 
 class CGameObject {
 public:

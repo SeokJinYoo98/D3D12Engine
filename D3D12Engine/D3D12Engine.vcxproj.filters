@@ -87,13 +87,16 @@
     <ClInclude Include="Gfw\GamePlayer\GamePlayer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\GameTransform\GameTransform.h">
+    <ClInclude Include="Common\GameTransform\GameTransform.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="MyGame\TestScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Gfw\GamePhysics\GamePhysics.h">
+    <ClInclude Include="Common\GamePhysics\GamePhysics.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfw\GameLight\GameLight.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -164,13 +167,16 @@
     <ClCompile Include="Gfw\GamePlayer\GamePlayer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\GameTransform\GameTransform.cpp">
+    <ClCompile Include="Common\GameTransform\GameTransform.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MyGame\TestScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Gfw\GamePhysics\GamePhysics.cpp">
+    <ClCompile Include="Common\GamePhysics\GamePhysics.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfw\GameLight\GameLight.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

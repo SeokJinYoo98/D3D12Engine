@@ -1,5 +1,6 @@
 ﻿#include "Common\pch.h"
 #include "Gfw/GameFramework.h"
+#include "MyGame/TestScene.h"
 // 콘솔 창 생성 함수
 void CreateConsoleWindow()
 {
@@ -22,6 +23,6 @@ int APIENTRY wWinMain(
     CreateConsoleWindow();
     CGameFramework D3D;
     D3D.InitGame(hInstance, nCmdShow, 800, 600);
-   // D3D.StartScene(std::make_unique<CGameScene>());
+    D3D.StartScene(std::make_unique<CTestScene>());
     return D3D.Run();
 }

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Gfw/GameTransform/GameTransform.h"
+#include "Common/GameTransform/GameTransform.h"
 
 class CComponent
 {

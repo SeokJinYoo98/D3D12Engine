@@ -10,7 +10,7 @@ void CGameFramework::InitGame(HINSTANCE hInstance, int nCmdShow, UINT nWidth, UI
 {
 	CD3DApp::InitWindow(hInstance, nCmdShow, nWidth, nHeight);
 	BuildRenderer();
-	BuildScene();
+	//BuildScene();
 	m_gameTimer.Reset();
 }
 
@@ -59,7 +59,7 @@ void CGameFramework::Render(float fElapsedTime)
 
 void CGameFramework::BuildScene()
 {
-	m_pGameScene = std::make_unique<CGameScene>();
+	//m_pGameScene = std::make_unique<CGameScene>();
 	m_pGameScene->InitScene(m_nClientWidth, m_nClientHeight);
 }
 

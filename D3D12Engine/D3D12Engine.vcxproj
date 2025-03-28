@@ -137,9 +137,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Gfw\GamePhysics\GamePhysics.h" />
+    <ClInclude Include="Gfw\GameLight\GameLight.h" />
+    <ClInclude Include="Common\GamePhysics\GamePhysics.h" />
     <ClInclude Include="Common\AssetLoader\ObjModelLoader.h" />
-    <ClInclude Include="Gfw\GameTransform\GameTransform.h" />
+    <ClInclude Include="Common\GameTransform\GameTransform.h" />
     <ClInclude Include="Gfw\GamePlayer\GamePlayer.h" />
     <ClInclude Include="Renderer\Mesh\Polygon\Polygon.h" />
     <ClInclude Include="Renderer\Mesh\Polygon\PolygonGenerator.h" />
@@ -165,9 +166,10 @@
     <ClInclude Include="MyGame\TestScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Gfw\GamePhysics\GamePhysics.cpp" />
+    <ClCompile Include="Gfw\GameLight\GameLight.cpp" />
+    <ClCompile Include="Common\GamePhysics\GamePhysics.cpp" />
     <ClCompile Include="Common\AssetLoader\ObjModelLoader.cpp" />
-    <ClCompile Include="Gfw\GameTransform\GameTransform.cpp" />
+    <ClCompile Include="Common\GameTransform\GameTransform.cpp" />
     <ClCompile Include="Gfw\GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="Renderer\Mesh\Polygon\Polygon.cpp" />
     <ClCompile Include="Renderer\Mesh\Polygon\PolygonGenerator.cpp" />
