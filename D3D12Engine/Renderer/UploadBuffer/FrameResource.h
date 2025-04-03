@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Renderer/UploadBuffer/UploadBuffer.h"
 
 
@@ -13,7 +13,7 @@ public:
     Microsoft::WRL::ComPtr<ID3D12CommandAllocator>      m_pCommandListAlloc     = nullptr;
     std::unique_ptr<CUploadBuffer<PassConstants>>       m_pPassCB               = nullptr;
     std::unique_ptr<CUploadBuffer<MeshConstants>>       m_pMeshCB               = nullptr;
-    std::unique_ptr<CUploadBuffer<UIConstants>>   m_pDiffusedCB           = nullptr;
+    std::unique_ptr<CUploadBuffer<MaterialConstants>>   m_pDiffusedCB           = nullptr;
 
     UINT64 m_nFence = 0;
 };

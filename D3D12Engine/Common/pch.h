@@ -1,4 +1,4 @@
-﻿// header.h: 표준 시스템 포함 파일
+// header.h: 표준 시스템 포함 파일
 // 또는 프로젝트 특정 포함 파일이 들어 있는 포함 파일입니다.
 //
 
@@ -101,7 +101,10 @@ namespace ResourceHelper {
 }
 
 namespace Vector3 {
-
+	inline DirectX::XMFLOAT4 XMFloat3ToFloat4(const DirectX::XMFLOAT3& xmf3Vector, float fWValue=1.f) 
+	{
+		return DirectX::XMFLOAT4(xmf3Vector.x, xmf3Vector.y, xmf3Vector.z, fWValue);
+	}
 	inline DirectX::XMFLOAT3 XMVectorToFloat3(const DirectX::XMVECTOR& xmvVector)
 	{
 		DirectX::XMFLOAT3 xmf3Result;
@@ -255,8 +258,11 @@ namespace Matrix4x4
 	}
 	inline DirectX::XMFLOAT4X4 Inverse(const DirectX::XMFLOAT4X4& xmmtx4x4Matrix)
 	{
+		DirectX::XMMATRIX inv = XMLoadFloat4x4(&xmmtx4x4Matrix);
+		DirectX::XMVECTOR det = DirectX::XMMatrixDeterminant(inv);
+		inv = DirectX::XMMatrixInverse(&det, inv);
 		DirectX::XMFLOAT4X4 xmmtx4x4Result;
-		XMStoreFloat4x4(&xmmtx4x4Result, XMMatrixInverse(nullptr, XMLoadFloat4x4(&xmmtx4x4Matrix)));
+		XMStoreFloat4x4(&xmmtx4x4Result, inv);
 		return xmmtx4x4Result;
 	}
 	inline DirectX::XMFLOAT4X4 Transpose(const DirectX::XMFLOAT4X4& xmmtx4x4Matrix)
@@ -276,6 +282,14 @@ namespace Matrix4x4
 
 		DirectX::XMFLOAT4X4 xmmtx4x4Result;
 		XMStoreFloat4x4(&xmmtx4x4Result, XMMatrixTranspose(XMLoadFloat4x4(&xmmtx4x4Matrix)));
+
+		std::cout << name << " after transpose:" << std::endl;
+		std::cout << xmmtx4x4Result._11 << " " << xmmtx4x4Result._12 << " " << xmmtx4x4Result._13 << " " << xmmtx4x4Result._14 << std::endl;
+		std::cout << xmmtx4x4Result._21 << " " << xmmtx4x4Result._22 << " " << xmmtx4x4Result._23 << " " << xmmtx4x4Result._24 << std::endl;
+		std::cout << xmmtx4x4Result._31 << " " << xmmtx4x4Result._32 << " " << xmmtx4x4Result._33 << " " << xmmtx4x4Result._34 << std::endl;
+		std::cout << xmmtx4x4Result._41 << " " << xmmtx4x4Result._42 << " " << xmmtx4x4Result._43 << " " << xmmtx4x4Result._44 << std::endl;
+
+		std::cout << '\n';
 		return xmmtx4x4Result;
 	}
 	inline void PrintMatrix4x4(const DirectX::XMFLOAT4X4& xmmtx4x4Matrix, const std::string& name)
@@ -302,25 +316,32 @@ namespace Matrix4x4
 			XMLoadFloat3(&xmf3UpDirection)));
 		return xmmtx4x4Result;
 	}
-	inline DirectX::XMFLOAT3 GetPosition(const DirectX::XMFLOAT4X4& xmf4x4transform)
+	inline DirectX::XMFLOAT3 GetPosition(const DirectX::XMFLOAT4X4& xmf4x4Transform)
 	{
-		return DirectX::XMFLOAT3(xmf4x4transform._41, xmf4x4transform._42, xmf4x4transform._43);
+		return DirectX::XMFLOAT3(xmf4x4Transform._41, xmf4x4Transform._42, xmf4x4Transform._43);
 	}
-	inline DirectX::XMFLOAT3 GetForwardVector(const DirectX::XMFLOAT4X4& xmf4x4transform, bool bNormalize = true)
+	inline DirectX::XMFLOAT3 GetForwardVector(const DirectX::XMFLOAT4X4& xmf4x4Transform, bool bNormalize = true)
 	{
-		DirectX::XMFLOAT3 xmf3Forward(xmf4x4transform._31, xmf4x4transform._32, xmf4x4transform._33);
+		DirectX::XMFLOAT3 xmf3Forward(xmf4x4Transform._31, xmf4x4Transform._32, xmf4x4Transform._33);
 		if (bNormalize)
 			xmf3Forward = Vector3::Normalize(xmf3Forward);
 
 		return xmf3Forward;
 	}
-	inline DirectX::XMFLOAT3 GetRightVector(const DirectX::XMFLOAT4X4& xmf4x4transform, bool bNormalize = true)
+	inline DirectX::XMFLOAT3 GetRightVector(const DirectX::XMFLOAT4X4& xmf4x4Transform, bool bNormalize = true)
 	{
-		DirectX::XMFLOAT3 xmf3Right(xmf4x4transform._11, xmf4x4transform._21, xmf4x4transform._31);
+		DirectX::XMFLOAT3 xmf3Right(xmf4x4Transform._11, xmf4x4Transform._12, xmf4x4Transform._13);
 		if (bNormalize)
 			xmf3Right = Vector3::Normalize(xmf3Right);
 
 		return xmf3Right;
+	}
+	inline DirectX::XMFLOAT3 GetUpVector(const DirectX::XMFLOAT4X4& xmf4x4Transform, bool bNormalize = true)
+	{
+		DirectX::XMFLOAT3 xmf3Up(xmf4x4Transform._12, xmf4x4Transform._22, xmf4x4Transform._32);
+		if (bNormalize)
+			xmf3Up = Vector3::Normalize(xmf3Up);
+		return xmf3Up;
 	}
 }
 

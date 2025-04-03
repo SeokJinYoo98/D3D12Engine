@@ -1,4 +1,4 @@
-﻿#include "Common\pch.h"
+#include "Common\pch.h"
 #include "D3D12Device.h"
 
 CD3D12Device::CD3D12Device()
@@ -279,7 +279,7 @@ void CD3D12Device::CreateCbvDescriptorHeap(UINT nMesh, UINT nUI, UINT nPass)
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
 	::ZeroMemory(&cbvHeapDesc, sizeof(cbvHeapDesc));
 
-	cbvHeapDesc.NumDescriptors = nMesh + nPass + nUI;
+	cbvHeapDesc.NumDescriptors = nMesh + nMesh + nPass;
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	cbvHeapDesc.NodeMask = 0;

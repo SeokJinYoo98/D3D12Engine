@@ -1,4 +1,4 @@
-﻿#include "Common\pch.h"
+#include "Common\pch.h"
 #include "RootSignature.h"
 
 CRootSignature::CRootSignature(ID3D12Device* pDevice)
@@ -17,15 +17,18 @@ void CRootSignature::Init(ID3D12Device* pDevice)
 
 	//	루트 파라미터는 디스크립터 테이블, 루트 디스크립터, 루트 상수 등의 형태로 정의될 수 있다.
 	// [루트 파라미터 0] : b0을 위한 CBV
-	CD3DX12_ROOT_PARAMETER cd3dRootParameters[2];
+	CD3DX12_ROOT_PARAMETER cd3dRootParameters[3];
 
 	CD3DX12_DESCRIPTOR_RANGE rangeObject;
 	rangeObject.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	CD3DX12_DESCRIPTOR_RANGE rangeMaterial;
+	rangeMaterial.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
 	CD3DX12_DESCRIPTOR_RANGE rangePass;
-	rangePass.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
+	rangePass.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 2);
 
 	cd3dRootParameters[0].InitAsDescriptorTable(1, &rangeObject);
-	cd3dRootParameters[1].InitAsDescriptorTable(1, &rangePass);
+	cd3dRootParameters[1].InitAsDescriptorTable(1, &rangeMaterial);
+	cd3dRootParameters[2].InitAsDescriptorTable(1, &rangePass);
 
 	// 루트 시그니처 설명자 생성 (두 개의 루트 파라미터를 사용)
 	CD3DX12_ROOT_SIGNATURE_DESC cd3dRootSigDesc(

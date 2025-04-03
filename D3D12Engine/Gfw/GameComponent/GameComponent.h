@@ -1,5 +1,7 @@
-﻿#pragma once
+#pragma once
 #include "Common/GameTransform/GameTransform.h"
+#include "GameResource/Material/Material.h"
+#include "GameResource/Mesh/Mesh.h"
 
 class CComponent
 {
@@ -12,11 +14,12 @@ class CStaticMeshComponent : public CComponent {
 public:
 	CStaticMeshComponent();
 	DirectX::XMFLOAT4X4			GetTransform();
-	const DirectX::XMFLOAT4&	GetColor() const;
+	const CMaterial*			GetMat() { return m_pMaterial.get(); }
 
 	CGameTransform			m_gameTransform		= { };
-	DirectX::XMFLOAT4		m_xmf4Color			= { 0.f, 0.f, 0.f, 1.f };
-	std::string				m_strMeshName		= { "None" };
+	DirectX::XMFLOAT4			m_xmf4Color;
+	std::shared_ptr<CBaseMesh> m_pMesh;
+	std::shared_ptr<CMaterial> m_pMaterial;
 };
 
 class CPhysicsComponent : public CComponent {

@@ -1,6 +1,6 @@
-﻿#include "Common\pch.h"
+#include "Common\pch.h"
 #include "GameScene.h"
-#include "Renderer/ResourceManager.h"
+#include "GameResource/ResourceManager.h"
 #include "Gfw/GamePlayer/GamePlayer.h"
 
 CGameScene::CGameScene()
@@ -13,9 +13,9 @@ void CGameScene::OnDestroy()
 {
 }
 
-void CGameScene::InitScene(UINT nWidth, UINT nHeight)
+void CGameScene::InitScene(UINT nWidth, UINT nHeight, CResourceManager* cResManager)
 {
-	BuildObjects();
+	BuildObjects(cResManager);
 	BuildCameras(nWidth, nHeight);
 }
 void CGameScene::ProcessInput(UCHAR* pKeysBuffers, float fElapsedTime)
@@ -37,7 +37,7 @@ void CGameScene::OnResize(UINT nWidth, UINT nHeight)
 	m_pCamera->GenerateProjectionMatrix(1.0f, 500.f, float(nWidth) / float(nHeight), 45.f);
 }
 
-void CGameScene::BuildObjects()
+void CGameScene::BuildObjects(CResourceManager* cResManager)
 {
 
 }

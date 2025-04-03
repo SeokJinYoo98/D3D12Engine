@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Gfw/App/D3DApp.h"
 #include "Gfw/GameScene/GameScene.h"
 #include "Renderer/Renderer.h"
@@ -27,9 +27,8 @@ private:
 	virtual void BuildRenderer();
 
 private:
-	std::unique_ptr<CGameScene>		m_pGameScene;
-	std::unique_ptr<CRenderer>		m_pGameRenderer;
-
+	std::unique_ptr<CGameScene>			m_pGameScene;
+	std::unique_ptr<CRenderer>			m_pGameRenderer;
 private:
 	bool							m_bDrawWorldGrid = true;
 };

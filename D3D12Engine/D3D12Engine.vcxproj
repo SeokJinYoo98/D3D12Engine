@@ -137,46 +137,51 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Common\AssetLoader\stb_image.h" />
     <ClInclude Include="Gfw\GameLight\GameLight.h" />
     <ClInclude Include="Common\GamePhysics\GamePhysics.h" />
     <ClInclude Include="Common\AssetLoader\ObjModelLoader.h" />
     <ClInclude Include="Common\GameTransform\GameTransform.h" />
     <ClInclude Include="Gfw\GamePlayer\GamePlayer.h" />
-    <ClInclude Include="Renderer\Mesh\Polygon\Polygon.h" />
-    <ClInclude Include="Renderer\Mesh\Polygon\PolygonGenerator.h" />
+    <ClInclude Include="GameResource\Material\Material.h" />
+    <ClInclude Include="GameResource\Mesh\Polygon\Polygon.h" />
+    <ClInclude Include="GameResource\Mesh\Polygon\PolygonGenerator.h" />
     <ClInclude Include="Renderer\UploadBuffer\FrameResource.h" />
     <ClInclude Include="Gfw\GameComponent\GameComponent.h" />
-    <ClInclude Include="Renderer\PSO\PSO.h" />
+    <ClInclude Include="GameResource\PSO\PSO.h" />
     <ClInclude Include="Renderer\Renderer.h" />
     <ClInclude Include="Renderer\D3D12Device\D3D12Device.h" />
     <ClInclude Include="Gfw\Camera\Camera.h" />
     <ClInclude Include="Gfw\App\D3DApp.h" />
     <ClInclude Include="Gfw\GameFramework.h" />
     <ClInclude Include="Gfw\App\GameTimer.h" />
-    <ClInclude Include="Renderer\Mesh\Mesh.h" />
+    <ClInclude Include="GameResource\Mesh\Mesh.h" />
     <ClInclude Include="Gfw\GameObject\GameObject.h" />
     <ClInclude Include="Gfw\GameScene\GameScene.h" />
     <ClInclude Include="Common\pch.h" />
-    <ClInclude Include="Renderer\ResourceManager.h" />
-    <ClInclude Include="Renderer\Shader\Shader.h" />
+    <ClInclude Include="GameResource\ResourceManager.h" />
+    <ClInclude Include="GameResource\Shader\Shader.h" />
     <ClInclude Include="Resources\Resource.h" />
     <ClInclude Include="Common\targetver.h" />
-    <ClInclude Include="Renderer\RootSignature\RootSignature.h" />
+    <ClInclude Include="GameResource\RootSignature\RootSignature.h" />
     <ClInclude Include="Renderer\UploadBuffer\UploadBuffer.h" />
     <ClInclude Include="MyGame\TestScene.h" />
+    <ClInclude Include="GameResource\Texture\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Common\AssetLoader\stb_image.cpp" />
     <ClCompile Include="Gfw\GameLight\GameLight.cpp" />
     <ClCompile Include="Common\GamePhysics\GamePhysics.cpp" />
     <ClCompile Include="Common\AssetLoader\ObjModelLoader.cpp" />
     <ClCompile Include="Common\GameTransform\GameTransform.cpp" />
     <ClCompile Include="Gfw\GamePlayer\GamePlayer.cpp" />
-    <ClCompile Include="Renderer\Mesh\Polygon\Polygon.cpp" />
-    <ClCompile Include="Renderer\Mesh\Polygon\PolygonGenerator.cpp" />
+    <ClCompile Include="GameResource\Material\Material.cpp" />
+    <ClCompile Include="GameResource\Mesh\Polygon\Polygon.cpp" />
+    <ClCompile Include="GameResource\Mesh\Polygon\PolygonGenerator.cpp" />
     <ClCompile Include="Renderer\UploadBuffer\FrameResource.cpp" />
     <ClCompile Include="Gfw\GameComponent\GameComponent.cpp" />
     <ClCompile Include="entry.cpp" />
-    <ClCompile Include="Renderer\PSO\PSO.cpp" />
+    <ClCompile Include="GameResource\PSO\PSO.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Renderer\D3D12Device\D3D12Device.cpp" />
     <ClCompile Include="Gfw\Camera\Camera.cpp" />
@@ -185,7 +190,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Gfw\App\GameTimer.cpp" />
-    <ClCompile Include="Renderer\Mesh\Mesh.cpp" />
+    <ClCompile Include="GameResource\Mesh\Mesh.cpp" />
     <ClCompile Include="Gfw\GameObject\GameObject.cpp" />
     <ClCompile Include="Gfw\GameScene\GameScene.cpp" />
     <ClCompile Include="Common\pch.cpp">
@@ -194,16 +199,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Renderer\ResourceManager.cpp" />
-    <ClCompile Include="Renderer\RootSignature\RootSignature.cpp" />
-    <ClCompile Include="Renderer\Shader\Shader.cpp" />
+    <ClCompile Include="GameResource\ResourceManager.cpp" />
+    <ClCompile Include="GameResource\RootSignature\RootSignature.cpp" />
+    <ClCompile Include="GameResource\Shader\Shader.cpp" />
     <ClCompile Include="Renderer\UploadBuffer\UploadBuffer.cpp" />
     <ClCompile Include="MyGame\TestScene.cpp" />
+    <ClCompile Include="GameResource\Texture\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\D3D12Engine.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\Textures\Sun.png" />
     <Image Include="Resources\D3D12Engine.ico" />
     <Image Include="Resources\small.ico" />
   </ItemGroup>
@@ -217,6 +224,10 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="assets\Shaders\LightUtil.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

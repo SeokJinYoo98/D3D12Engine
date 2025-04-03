@@ -1,11 +1,10 @@
-﻿#include "Common\pch.h"
+#include "Common\pch.h"
 #include "GameTransform.h"
 
 CGameTransform::CGameTransform()
 	:m_xmf3Position{0.f, 0.f, 0.f,}, m_xmf3Rotation{0.f, 0.f, 0.f}, m_xmf3Scale{1.f, 1.f, 1.f}
 {
 	m_xmf4x4Transform = Matrix4x4::Identity();
-	UpdateTransform();
 }
 
 DirectX::XMFLOAT4X4 CGameTransform::GetTransform()
@@ -46,6 +45,17 @@ DirectX::XMFLOAT3 CGameTransform::GetLeftVector()
 {
 	DirectX::XMFLOAT4X4 xmf4x4Tr = GetTransform();
 	return Vector3::ScalarProduct(Matrix4x4::GetRightVector(xmf4x4Tr), -1.f);
+}
+
+DirectX::XMFLOAT3 CGameTransform::GetUpVector()
+{
+	DirectX::XMFLOAT4X4 xmf4x4Tr = GetTransform();
+	return Matrix4x4::GetUpVector(xmf4x4Tr);
+}
+
+DirectX::XMFLOAT3 CGameTransform::GetDownVector()
+{
+	return Vector3::ScalarProduct(GetUpVector(), -1.f);
 }
 
 DirectX::XMFLOAT3 CGameTransform::GetPosPlusForward()
@@ -120,21 +130,21 @@ void CGameTransform::SetPosition(const DirectX::XMFLOAT3& xmf3Position)
 		m_bDirtyTransform = true;
 }
 
-void CGameTransform::SetRotationYaw(float fYaw)
+void CGameTransform::SetRotationY(float fYaw)
 {
 	m_xmf3Rotation.y = fYaw;
 	if (!m_bDirtyTransform)
 		m_bDirtyTransform = true;
 }
 
-void CGameTransform::SetRotationPitch(float fPitch)
+void CGameTransform::SetRotationX(float fPitch)
 {
 	m_xmf3Rotation.x = fPitch;
 	if (!m_bDirtyTransform)
 		m_bDirtyTransform = true;
 }
 
-void CGameTransform::SetRotationRoll(float fRoll)
+void CGameTransform::SetRotationZ(float fRoll)
 {
 	m_xmf3Rotation.z = fRoll;
 	if (!m_bDirtyTransform)
@@ -173,7 +183,6 @@ void CGameTransform::Rotate(float x, float y, float z)
 void CGameTransform::Rotate(const DirectX::XMFLOAT3& xmf3DeltaRotate)
 {
 	m_xmf3Rotation = Vector3::Add(m_xmf3Rotation, xmf3DeltaRotate);
-	std::cout << m_xmf3Rotation.x << ", " << m_xmf3Rotation.y << ", " << m_xmf3Rotation.z << '\n';
 	if (!m_bDirtyTransform)
 		m_bDirtyTransform = true;
 }
@@ -195,7 +204,12 @@ void CGameTransform::UpdateTransform()
 	if (!m_bDirtyTransform) return;
 
 	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(m_xmf3Scale.x, m_xmf3Scale.y, m_xmf3Scale.z);
-	DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(m_xmf3Rotation.x, m_xmf3Rotation.y, m_xmf3Rotation.z);
+
+	DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(
+		DirectX::XMConvertToRadians(m_xmf3Rotation.x),
+		DirectX::XMConvertToRadians(m_xmf3Rotation.y),
+		DirectX::XMConvertToRadians(m_xmf3Rotation.z)
+	);
 	DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(m_xmf3Position.x, m_xmf3Position.y, m_xmf3Position.z);
 
 	DirectX::XMMATRIX transform = scale * rotation * translation;
@@ -203,4 +217,8 @@ void CGameTransform::UpdateTransform()
 	DirectX::XMStoreFloat4x4(&m_xmf4x4Transform, transform);
 
 	m_bDirtyTransform = false;
+}
+
+void CGameTransform::CheckRotation()
+{
 }

@@ -36,7 +36,7 @@
     <ClInclude Include="Gfw\App\GameTimer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Mesh\Mesh.h">
+    <ClInclude Include="GameResource\Mesh\Mesh.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Gfw\GameObject\GameObject.h">
@@ -54,22 +54,22 @@
     <ClInclude Include="Renderer\D3D12Device\D3D12Device.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\ResourceManager.h">
+    <ClInclude Include="GameResource\ResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\RootSignature\RootSignature.h">
+    <ClInclude Include="GameResource\RootSignature\RootSignature.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Gfw\GameComponent\GameComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Shader\Shader.h">
+    <ClInclude Include="GameResource\Shader\Shader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\UploadBuffer\UploadBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\PSO\PSO.h">
+    <ClInclude Include="GameResource\PSO\PSO.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\UploadBuffer\FrameResource.h">
@@ -78,10 +78,10 @@
     <ClInclude Include="Common\AssetLoader\ObjModelLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Mesh\Polygon\PolygonGenerator.h">
+    <ClInclude Include="GameResource\Mesh\Polygon\PolygonGenerator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\Mesh\Polygon\Polygon.h">
+    <ClInclude Include="GameResource\Mesh\Polygon\Polygon.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Gfw\GamePlayer\GamePlayer.h">
@@ -99,6 +99,15 @@
     <ClInclude Include="Gfw\GameLight\GameLight.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GameResource\Material\Material.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameResource\Texture\Texture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\AssetLoader\stb_image.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\pch.cpp">
@@ -113,7 +122,7 @@
     <ClCompile Include="Gfw\App\GameTimer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Mesh\Mesh.cpp">
+    <ClCompile Include="GameResource\Mesh\Mesh.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Gfw\GameObject\GameObject.cpp">
@@ -131,25 +140,25 @@
     <ClCompile Include="Renderer\D3D12Device\D3D12Device.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\ResourceManager.cpp">
+    <ClCompile Include="GameResource\ResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="entry.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\RootSignature\RootSignature.cpp">
+    <ClCompile Include="GameResource\RootSignature\RootSignature.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Gfw\GameComponent\GameComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Shader\Shader.cpp">
+    <ClCompile Include="GameResource\Shader\Shader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\UploadBuffer\UploadBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\PSO\PSO.cpp">
+    <ClCompile Include="GameResource\PSO\PSO.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\UploadBuffer\FrameResource.cpp">
@@ -158,10 +167,10 @@
     <ClCompile Include="Common\AssetLoader\ObjModelLoader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Mesh\Polygon\PolygonGenerator.cpp">
+    <ClCompile Include="GameResource\Mesh\Polygon\PolygonGenerator.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Mesh\Polygon\Polygon.cpp">
+    <ClCompile Include="GameResource\Mesh\Polygon\Polygon.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Gfw\GamePlayer\GamePlayer.cpp">
@@ -179,6 +188,15 @@
     <ClCompile Include="Gfw\GameLight\GameLight.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="GameResource\Material\Material.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameResource\Texture\Texture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\AssetLoader\stb_image.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\D3D12Engine.rc">
@@ -192,11 +210,15 @@
     <Image Include="Resources\D3D12Engine.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="assets\Textures\Sun.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shaders\Shaders.hlsl">
       <Filter>셰이더 파일</Filter>
     </FxCompile>
     <FxCompile Include="assets\Shaders\DiffusedShader.hlsl" />
+    <FxCompile Include="assets\Shaders\LightUtil.hlsli" />
   </ItemGroup>
 </Project>

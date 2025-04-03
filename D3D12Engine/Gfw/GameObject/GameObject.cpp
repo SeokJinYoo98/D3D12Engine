@@ -1,4 +1,4 @@
-﻿#include "Common/pch.h"
+#include "Common/pch.h"
 #include "GameObject.h"
 #include "Gfw/Camera/Camera.h"
 CGameObject::CGameObject()
@@ -8,6 +8,7 @@ CGameObject::CGameObject()
 void CGameObject::AddMeshComponent(const std::string& meshName, std::shared_ptr<CStaticMeshComponent> pMesh)
 {
 	pMesh->m_gameTransform.SetParent(m_pGameTransform);
+
 	m_pMeshes["meshName"] = pMesh;
 }
 void CGameObject::Update(float fElapsedTime)

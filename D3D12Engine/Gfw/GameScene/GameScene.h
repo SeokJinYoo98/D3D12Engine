@@ -1,9 +1,9 @@
-﻿#pragma once
+#pragma once
 #include "Gfw/GamePlayer/GamePlayer.h"
 #include "Gfw/Camera/Camera.h"
 #include "Gfw/GameLight/GameLight.h"
 
-class CGamePlayer;
+class CResourceManager;
 
 class CGameScene {
 public:
@@ -12,7 +12,7 @@ public:
 	virtual void OnDestroy();
 
 public:
-	void InitScene(UINT nWidth, UINT nHeight);
+	void InitScene(UINT nWidth, UINT nHeight, CResourceManager* cResManager);
 
 	virtual void ProcessInput(UCHAR* pKeysBuffers, float fElapsedTime);
 	virtual void Update(float fElapsedTime);
@@ -24,16 +24,18 @@ public:
 	const DirectX::XMFLOAT4& GetBgColor() const { return m_xmf4BgColor; }
 	const DirectX::XMFLOAT4& GetAmbientLight() const { return m_xmf4AmbientLight; }
 	const std::unordered_map<std::string, std::vector<std::shared_ptr<CStaticMeshComponent>>>& GetMeshes() { return m_pMeshComps; }
-	const std::vector<std::unique_ptr<CGameLight>>& GetLights() const { return m_pGameLights; }
+	std::vector<CGameDirectionalLight>& GetDirectionalLights() { return m_gameDirectionalLights; }
+	std::vector<CGamePointLight>& GetPointLights() { return m_gamePointLights; }
 protected:
-	virtual void BuildObjects();
+	virtual void BuildObjects(CResourceManager* cResManager);
 	virtual void BuildCameras(UINT nWidth, UINT nHeight);
 
 protected:
 	std::shared_ptr<CCamera>					m_pCamera;
 
-	std::vector<std::unique_ptr<CGameLight>>	m_pGameLights;
-	std::vector<std::unique_ptr<CGameObject>>	m_pGameObjects;
+	std::vector<CGameDirectionalLight>					m_gameDirectionalLights;
+	std::vector<CGamePointLight>						m_gamePointLights;
+	std::vector<std::unique_ptr<CGameObject>>			m_pGameObjects;
 	std::unordered_map<std::string, std::vector<std::shared_ptr<CStaticMeshComponent>>> m_pMeshComps;
 
 	DirectX::XMFLOAT4	m_xmf4BgColor;

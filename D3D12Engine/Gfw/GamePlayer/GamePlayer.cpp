@@ -7,7 +7,6 @@ void CGamePlayer::Update(float fElapsedTime)
 	if (m_pCamera) {
 		m_pCamera->SetCameraPos(m_pGameTransform->GetPosition());
 		m_pCamera->SetCameraLookAt(m_pGameTransform->GetPosPlusForward());
-		m_pCamera->SetCameraUp(Direction::UP);
 	}
 }
 

@@ -26,6 +26,6 @@ public:
 private:
 	std::shared_ptr<CCamera> m_pCamera = nullptr;
 	float m_fMoveSpeed = 10.f;
-	float m_fRotateSpeed = 2.f;
+	float m_fRotateSpeed = 60.f;
 };
 

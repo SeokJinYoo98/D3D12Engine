@@ -1,6 +1,4 @@
-﻿#pragma once
-#include "Renderer/UploadBuffer/UploadBuffer.h"
-
+#pragma once
 class CCamera;
 class CShader 
 {

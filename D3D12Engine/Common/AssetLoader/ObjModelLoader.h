@@ -1,7 +1,6 @@
 ﻿#pragma once
 class CObjModelLoader
 {
-	// [TODO] : 오브젝트 로더 생성하기.
 public:
 	struct PolyData {
 		std::vector<uint32_t>				Indices;

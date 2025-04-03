@@ -1,21 +1,27 @@
-﻿#pragma once
+#pragma once
 #include "Gfw/GameLight/GameLight.h"
-
+constexpr int MAX_DIRECTIONALLIGHT  = 2;
+constexpr int MAX_POINTLIGHT        = 16;
 
 struct MeshConstants {
     DirectX::XMFLOAT4X4 xmf4x4World         = Matrix4x4::Identity();
-    DirectX::XMFLOAT4	xmf4Color           = { 0.0f, 0.0f, 0.0f, 1.0f };
+    DirectX::XMFLOAT4X4 xmf4x4WorldInv      = Matrix4x4::Identity();
+    DirectX::XMFLOAT4   xmf4Color;
 };
-struct UIConstants {
-    DirectX::XMFLOAT4X4 xmf4x4World = Matrix4x4::Identity();
+struct MaterialConstants {
+    DirectX::XMFLOAT4	xmf4DiffuseAlbedo;
+    DirectX::XMFLOAT3	xmf3FresnelR0;
+    float				fRoughness;
 };
 struct PassConstants {
     DirectX::XMFLOAT4X4 xmf4x4View          = Matrix4x4::Identity();
     DirectX::XMFLOAT4X4 xmf4x4Projection    = Matrix4x4::Identity();
-    DirectX::XMFLOAT3   xmf3EyePosition;
-    float               padding;
     DirectX::XMFLOAT4   xmf4AmbientLight;
-    Light               light;
+    DirectX::XMFLOAT3   xmf3EyePosition;
+    int                 nNumDirectionalLights;
+    DirectionLight      DirectionalLight[MAX_DIRECTIONALLIGHT];
+    PointLight          PointLights[MAX_POINTLIGHT];
+    int                 nNumPointLights;
 };
 
 template<typename T>

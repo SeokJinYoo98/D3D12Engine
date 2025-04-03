@@ -1,4 +1,4 @@
-﻿#include "Common\pch.h"
+#include "Common\pch.h"
 #include "GameFramework.h"
 
 
@@ -60,7 +60,7 @@ void CGameFramework::Render(float fElapsedTime)
 void CGameFramework::BuildScene()
 {
 	//m_pGameScene = std::make_unique<CGameScene>();
-	m_pGameScene->InitScene(m_nClientWidth, m_nClientHeight);
+	m_pGameScene->InitScene(m_nClientWidth, m_nClientHeight, m_pGameRenderer->GetResourceManager());
 }
 
 void CGameFramework::BuildRenderer()

@@ -1,12 +1,5 @@
-﻿#pragma once
-#include "Renderer/Shader/Shader.h"
+#pragma once
 #define ASPECT_RATIO (float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT))
-
-struct VS_CB_CAMERA_INFO
-{
-	DirectX::XMFLOAT4X4 m_xmf4x4View;
-	DirectX::XMFLOAT4X4 m_xmf4x4Projection;
-};
 
 class CCamera
 {

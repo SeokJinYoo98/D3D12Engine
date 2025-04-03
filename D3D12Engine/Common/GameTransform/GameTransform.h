@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 namespace TransformHelper {
 
 }
@@ -10,6 +10,9 @@ public:
 		if (!pParent)
 			throw std::runtime_error("Invalid parent");
 		m_pParentTransform = pParent;
+		Matrix4x4::PrintMatrix4x4(m_pParentTransform->GetTransform(), "Obj");
+		Matrix4x4::PrintMatrix4x4(m_xmf4x4Transform, "Child");
+		Matrix4x4::PrintMatrix4x4(GetTransform(), "Mul");
 	}
 	DirectX::XMFLOAT4X4 GetTransform();
 	DirectX::XMFLOAT3	GetPosition();
@@ -17,6 +20,8 @@ public:
 	DirectX::XMFLOAT3	GetBackwardVector();
 	DirectX::XMFLOAT3   GetRightVector();
 	DirectX::XMFLOAT3   GetLeftVector();
+	DirectX::XMFLOAT3	GetUpVector();
+	DirectX::XMFLOAT3   GetDownVector();
 	DirectX::XMFLOAT3	GetPosPlusForward();
 
 	void SetScaleX(float fScaleX);
@@ -31,9 +36,9 @@ public:
 	void SetPosition(float fPosX, float fPosY, float fPosZ);
 	void SetPosition(const DirectX::XMFLOAT3& xmf3Position);
 
-	void SetRotationYaw(float fYaw);
-	void SetRotationPitch(float fPitch);
-	void SetRotationRoll(float fRoll);
+	void SetRotationY(float fYaw);
+	void SetRotationX(float fPitch);
+	void SetRotationZ(float fRoll);
 	void SetRotation(float fYaw, float fPitch, float fRoll);
 	void SetRotation(const DirectX::XMFLOAT3& xmf3Roatation);
 
@@ -46,7 +51,7 @@ public:
 
 private:
 	void UpdateTransform();
-
+	void CheckRotation();
 private:
 	std::shared_ptr<CGameTransform>		m_pParentTransform = nullptr;
 	DirectX::XMFLOAT4X4					m_xmf4x4Transform;

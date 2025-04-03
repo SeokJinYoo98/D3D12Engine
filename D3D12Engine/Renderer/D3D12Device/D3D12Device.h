@@ -1,4 +1,5 @@
-﻿#pragma once
+#pragma once
+
 class CD3D12Device
 {
 public:
@@ -33,7 +34,7 @@ protected:
 	void MoveToNextFrame();
 
 	virtual void CreateCbvDescriptorHeap(UINT nMesh, UINT nUI, UINT nPass);
-public:
+protected:
 	static constexpr UINT SWAP_CHAIN_FRAME_COUNT = 2;
 
 	Microsoft::WRL::ComPtr<IDXGIFactory4>	m_pFactory		= nullptr;

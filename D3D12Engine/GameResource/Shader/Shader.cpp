@@ -1,5 +1,5 @@
-﻿#include "Common\pch.h"
-#include "Renderer/Shader/Shader.h"
+#include "Common\pch.h"
+#include "GameResource/Shader/Shader.h"
 
 void CShader::CompileShaderFromFile(const WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile)
 {
